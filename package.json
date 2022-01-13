@@ -7,7 +7,8 @@
   "module": "dist/esm/index.mjs",
   "scripts": {
     "start:dev": "tsup ./src --sourcemap --watch --format esm,cjs --dts",
-    "start:build": "tsup ./src --minify --format esm,cjs --dts"
+    "start:build": "tsup ./src --minify --format esm,cjs --dts",
+    "lint": "eslint ./src"
   },
   "lint-staged": {
     "**/*": "prettier --write --ignore-unknown"
@@ -17,6 +18,7 @@
     "@typescript-eslint/parser": "^5.9.1",
     "eslint": "^8.6.0",
     "eslint-config-prettier": "^8.3.0",
+    "eslint-plugin-prettier": "^4.0.0",
     "husky": "^7.0.4",
     "lint-staged": "^12.1.7",
     "prettier": "^2.5.1",
