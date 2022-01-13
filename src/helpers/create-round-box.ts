@@ -1,4 +1,4 @@
-// @ts-nocheck
+/* eslint-disable prefer-const */
 
 /*
   ROUNDED BOX GEOMETRY
