@@ -1,11 +1,5 @@
 import { mat4, vec3 } from 'gl-matrix'
 
-/**
- * Base transform class to handle vectors and matrices
- * Taken from my webgl library:
- * https://github.com/gnikoloff/hwoa-rang-gl/blob/main/src/core/transform.ts
- * @public
- */
 export class Transform {
   public position = vec3.fromValues(0, 0, 0)
   public rotation = vec3.fromValues(0, 0, 0)

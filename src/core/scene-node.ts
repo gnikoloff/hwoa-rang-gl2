@@ -1,6 +1,6 @@
 import { mat4 } from 'gl-matrix'
-import { traverseCallback } from '../../../../types'
-import { Transform } from './transform'
+import { uid } from 'uid'
+import { Transform, traverseCallback } from '..'
 
 export class SceneNode extends Transform {
   parentNode: SceneNode | null = null
@@ -9,7 +9,7 @@ export class SceneNode extends Transform {
   worldMatrix = mat4.create()
   normalMatrix = mat4.create()
 
-  uid!: string
+  uid: string = uid(9)
 
   protected _levelIndex = 0
 

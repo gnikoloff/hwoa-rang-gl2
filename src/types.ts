@@ -1,4 +1,5 @@
 import { vec3 } from 'gl-matrix'
+import { SceneNode } from '.'
 
 export interface BoundingBox {
   min: vec3
@@ -29,3 +30,5 @@ export interface RoundBoxGeometry {
   interleavedArray: Float32Array
   indicesArray: Int16Array
 }
+
+export type traverseCallback = (node: SceneNode, depthLevel: number) => void

@@ -20,17 +20,17 @@ export class Renderable extends SceneNode {
 
   constructor(
     gl: WebGL2RenderingContext,
-    vertexCount: number,
+    vertexShaderSource: string,
+    fragmentShaderSource: string,
     shaderDefines: Record<string, any> = {},
   ) {
     super()
     this.gl = gl
-    this.vertexCount = vertexCount
     this.vao = gl.createVertexArray()!
     this.drawProgram = createProgram(
       gl,
-      'VERTEX_SHADER_SRC',
-      'FRAGMENT_SHADER_SRC',
+      vertexShaderSource,
+      fragmentShaderSource,
       shaderDefines,
     )
     this.modelMatrixLocation = gl.getUniformLocation(

@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { vec3 } from 'gl-matrix'
 import { PerspectiveCamera } from './perspective-camera'
 import { clamp } from '../helpers/math'
@@ -37,15 +38,15 @@ export class CameraController {
   private minDistance = 0
   private maxDistance = Infinity
   private isEnabled = true
-  // private isDamping: boolean
-  // private dampingFactor: number
-  // private isZoom: boolean
-  // private zoomSpeed: number
-  // private isRotate: boolean
-  // private rotateSpeed: number
-  // private isPan: boolean
-  // private keyPanSpeed: number
-  // private enableKeys: boolean
+  private isDamping: boolean
+  private dampingFactor: number
+  private isZoom: boolean
+  private zoomSpeed: number
+  private isRotate: boolean
+  private rotateSpeed: number
+  private isPan: boolean
+  private keyPanSpeed: number
+  private enableKeys: boolean
   private keys: {
     LEFT: string
     UP: string

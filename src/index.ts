@@ -13,3 +13,5 @@ export { CameraController } from './cameras/camera-controller'
 export { Transform } from './core/transform'
 export { SceneNode } from './core/scene-node'
 export { Renderable } from './core/renderable'
+
+export * from './types'
