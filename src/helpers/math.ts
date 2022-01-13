@@ -1,6 +1,6 @@
 import { mat4, vec2, vec3, vec4 } from 'gl-matrix'
 import { PerspectiveCamera } from '../cameras/perspective-camera'
-import { BoundingBox } from '../types'
+import { BoundingBox } from '../interfaces'
 
 /**
  * Clamp number to a given range

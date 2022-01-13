@@ -17,7 +17,7 @@
 */
 
 import { vec3 } from 'gl-matrix'
-import { RoundBox, RoundBoxGeometry } from '../types'
+import { RoundBox, RoundBoxGeometry } from '../interfaces'
 import { normalizeNumber, triangleWave } from '../helpers/math'
 
 // Handle Simple 90 Degree Rotations without the use of Quat,Trig,Matrices

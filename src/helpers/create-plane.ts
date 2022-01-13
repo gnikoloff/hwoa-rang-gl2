@@ -1,4 +1,4 @@
-import { Plane } from '../types'
+import { Plane } from '../interfaces'
 
 export function createPlane(params: Plane = {}) {
   const {

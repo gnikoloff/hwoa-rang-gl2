@@ -15,4 +15,4 @@ export { CameraController } from './cameras/camera-controller'
 export { Transform } from './extra/transform'
 export { SceneNode } from './extra/scene-node'
 
-export * from './types'
+export * from './interfaces'
