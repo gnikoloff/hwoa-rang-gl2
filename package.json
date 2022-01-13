@@ -3,11 +3,11 @@
   "version": "0.0.1",
   "description": "minimal WebGL2.0 library",
   "main": "dist/index.js",
-  "types": "dist/types.d.ts",
-  "module": "dist/esm/index.mjs",
+  "types": "dist/index.d.ts",
+  "module": "dist/index.mjs",
   "scripts": {
-    "start:dev": "tsup ./src --sourcemap --watch --format esm,cjs --dts",
-    "start:build": "tsup ./src --minify --format esm,cjs --dts",
+    "start:dev": "tsup ./src/index.ts --sourcemap --watch --format esm,cjs --dts --clean",
+    "start:build": "tsup ./src/index.ts --minify --format esm,cjs --dts --clean",
     "lint": "eslint ./src"
   },
   "lint-staged": {

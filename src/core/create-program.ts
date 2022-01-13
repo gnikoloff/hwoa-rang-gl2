@@ -28,7 +28,7 @@ export function createProgram(
     defines,
   )
 
-  const program: WebGLProgram = gl.createProgram()
+  const program: WebGLProgram = gl.createProgram()!
   gl.attachShader(program, vertexShader)
   gl.attachShader(program, fragmentShader)
   gl.linkProgram(program)

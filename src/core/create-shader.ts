@@ -21,7 +21,7 @@ export const createShader = (
   }
   shaderSource = shaderSource.replace('-- DEFINES_HOOK --', shaderDefinesString)
 
-  const shader: WebGLShader = gl.createShader(shaderType)
+  const shader: WebGLShader = gl.createShader(shaderType)!
   gl.shaderSource(shader, shaderSource)
   gl.compileShader(shader)
   if (gl.getShaderParameter(shader, gl.COMPILE_STATUS)) {
