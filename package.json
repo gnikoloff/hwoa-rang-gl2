@@ -29,6 +29,7 @@
   },
   "dependencies": {
     "gl-matrix": "^3.4.3",
+    "texture-atlas": "^0.2.1",
     "uid": "^2.0.0"
   },
   "repository": {
