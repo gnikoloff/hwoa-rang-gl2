@@ -11,7 +11,10 @@
     "lint": "eslint ./src"
   },
   "lint-staged": {
-    "**/*": ["npm run lint", "prettier --write --ignore-unknown"]
+    "**/*": [
+      "npm run lint",
+      "prettier --write --ignore-unknown"
+    ]
   },
   "devDependencies": {
     "@typescript-eslint/eslint-plugin": "^5.9.1",
