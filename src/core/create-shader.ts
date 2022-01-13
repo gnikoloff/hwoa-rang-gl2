@@ -16,7 +16,9 @@ export const createShader = (
 ): WebGLShader => {
   let shaderDefinesString = ''
   for (const [key, value] of Object.entries(defines)) {
-    // const valueFormatted = typeof value === 'boolean' ? Number(value) : value
+    if (typeof value === 'boolean' && !value) {
+      continue
+    }
     shaderDefinesString += `#define ${key} ${value}\n`
   }
   shaderSource = shaderSource.replace('-- DEFINES_HOOK --', shaderDefinesString)
