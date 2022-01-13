@@ -1,6 +1,8 @@
 import { vec3 } from 'gl-matrix'
 import { SceneNode } from '.'
 
+export type ShaderDefineValue = boolean | number
+
 export interface BoundingBox {
   min: vec3
   max: vec3

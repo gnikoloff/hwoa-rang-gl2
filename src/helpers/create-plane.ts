@@ -22,7 +22,7 @@ export function createPlane(params: Plane = {}) {
 
   let i = 0
   let ii = 0
-  let io = i
+  const io = i
   const segW = width / wSegs
   const segH = height / hSegs
   const uDir = 1

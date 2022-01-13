@@ -1,5 +1,3 @@
-// @ts-nocheck
-
 /*
   ROUNDED BOX GEOMETRY
 
@@ -207,8 +205,6 @@ function edge_grid(width = 2, height = 2, depth = 2, radius = 0.5, div = 4) {
 
   let bit, j, i, t, s, x, y, z
 
-  y = my
-
   // Use corners kinda like Marching Squares
   const corners = [
     vec3.fromValues(radius - mx, my - radius, radius - mz),
@@ -302,14 +298,9 @@ function geo_rot_merge(geo, obj, fn_rot, idx) {
 
 // Generate Indices for a Grid Mesh
 function grid_tri_idx(x_cells, y_cells) {
-  let ary = [],
-    col_cnt = x_cells + 1,
-    x,
-    y,
-    a,
-    b,
-    c,
-    d
+  const ary = []
+  const col_cnt = x_cells + 1
+  let x, y, a, b, c, d
 
   for (y = 0; y < y_cells; y++) {
     for (x = 0; x < x_cells; x++) {

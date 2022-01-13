@@ -1,4 +1,3 @@
-// @ts-nocheck
 import { vec3 } from 'gl-matrix'
 import { PerspectiveCamera } from './perspective-camera'
 import { clamp } from '../helpers/math'

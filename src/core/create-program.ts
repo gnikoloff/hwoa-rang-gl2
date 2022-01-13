@@ -1,3 +1,4 @@
+import { ShaderDefineValue } from '..'
 import { createShader } from './create-shader'
 
 /**
@@ -11,7 +12,7 @@ export function createProgram(
   gl: WebGL2RenderingContext,
   vertexShaderSource: string,
   fragmentShaderSource: string,
-  defines: Record<string, any> = {},
+  defines: { [key: string]: ShaderDefineValue },
 ): WebGLProgram {
   const vertexShader: WebGLShader | null = createShader(
     gl,
@@ -27,7 +28,7 @@ export function createProgram(
     defines,
   )
 
-  const program: WebGLProgram = gl.createProgram()!
+  const program: WebGLProgram = gl.createProgram()
   gl.attachShader(program, vertexShader)
   gl.attachShader(program, fragmentShader)
   gl.linkProgram(program)

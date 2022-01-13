@@ -1,3 +1,5 @@
+import { ShaderDefineValue } from '..'
+
 /**
  * Create and compile WebGLShader
  * @param {WebGL2RenderingContext)} gl
@@ -10,7 +12,7 @@ export const createShader = (
   gl: WebGL2RenderingContext,
   shaderType: GLenum,
   shaderSource: string,
-  defines: Record<string, any> = {},
+  defines: { [key: string]: ShaderDefineValue },
 ): WebGLShader => {
   let shaderDefinesString = ''
   for (const [key, value] of Object.entries(defines)) {
@@ -19,7 +21,7 @@ export const createShader = (
   }
   shaderSource = shaderSource.replace('-- DEFINES_HOOK --', shaderDefinesString)
 
-  const shader: WebGLShader = gl.createShader(shaderType)!
+  const shader: WebGLShader = gl.createShader(shaderType)
   gl.shaderSource(shader, shaderSource)
   gl.compileShader(shader)
   if (gl.getShaderParameter(shader, gl.COMPILE_STATUS)) {
