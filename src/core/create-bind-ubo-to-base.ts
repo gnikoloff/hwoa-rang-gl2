@@ -1,4 +1,4 @@
-export const createAndBindUBOToBase = (
+const createAndBindUBOToBase = (
   gl: WebGL2RenderingContext,
   blockSize: GLuint,
   baseIdx: GLuint = 0,
@@ -11,3 +11,5 @@ export const createAndBindUBOToBase = (
   gl.bindBufferBase(gl.UNIFORM_BUFFER, baseIdx, buffer)
   return buffer
 }
+
+export default createAndBindUBOToBase

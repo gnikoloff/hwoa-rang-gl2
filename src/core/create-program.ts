@@ -1,5 +1,5 @@
 import { ShaderDefineValue } from '..'
-import { createShader } from './create-shader'
+import createShader from './create-shader'
 
 /**
  * Create and link WebGLProgram with provided shader strings
@@ -8,12 +8,12 @@ import { createShader } from './create-shader'
  * @param {string} fragmentShaderSource
  * @returns {WebGLProgram}
  */
-export function createProgram(
+const createProgram = (
   gl: WebGL2RenderingContext,
   vertexShaderSource: string,
   fragmentShaderSource: string,
   defines: { [key: string]: ShaderDefineValue },
-): WebGLProgram {
+): WebGLProgram => {
   const vertexShader: WebGLShader | null = createShader(
     gl,
     gl.VERTEX_SHADER,
@@ -45,3 +45,5 @@ export function createProgram(
   gl.deleteProgram(program)
   throw new Error(`Error linking program: ${gl.getProgramInfoLog(program)}`)
 }
+
+export default createProgram

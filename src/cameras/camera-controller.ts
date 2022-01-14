@@ -1,7 +1,7 @@
 // @ts-nocheck
 
 import { vec3 } from 'gl-matrix'
-import { PerspectiveCamera } from './perspective-camera'
+import PerspectiveCamera from './perspective-camera'
 import { clamp } from '../helpers/math'
 
 class DampedAction {
@@ -32,7 +32,7 @@ class DampedAction {
   }
 }
 
-export class CameraController {
+export default class CameraController {
   private camera: PerspectiveCamera
   private domElement: HTMLElement
   private target: vec3 = vec3.create()

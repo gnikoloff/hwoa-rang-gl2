@@ -1,6 +1,6 @@
 import { UBOInfo, UBOVariableInfo } from '..'
 
-export const createUniformBlockInfo = (
+const createUniformBlockInfo = (
   gl: WebGL2RenderingContext,
   program: WebGLProgram,
   uniformBlockName: string,
@@ -45,3 +45,5 @@ export const createUniformBlockInfo = (
     uniforms,
   }
 }
+
+export default createUniformBlockInfo

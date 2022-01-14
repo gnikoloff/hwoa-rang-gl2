@@ -1,6 +1,6 @@
 import { Plane } from '../interfaces'
 
-export function createPlane(params: Plane = {}) {
+export default (params: Plane = {}) => {
   const {
     width = 1,
     height = 1,

@@ -8,7 +8,7 @@ import { ShaderDefineValue } from '..'
  * @param {Record<string, any>} defines
  * @returns {WebGLShader}
  */
-export const createShader = (
+const createShader = (
   gl: WebGL2RenderingContext,
   shaderType: GLenum,
   shaderSource: string,
@@ -36,3 +36,5 @@ export const createShader = (
   gl.deleteShader(shader)
   throw new Error(errorMessage)
 }
+
+export default createShader

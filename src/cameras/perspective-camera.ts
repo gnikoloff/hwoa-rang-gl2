@@ -1,7 +1,7 @@
 import { mat4 } from 'gl-matrix'
 import Camera from './camera'
 
-export class PerspectiveCamera extends Camera {
+export default class PerspectiveCamera extends Camera {
   fieldOfView: number
   aspect: number
   near: number

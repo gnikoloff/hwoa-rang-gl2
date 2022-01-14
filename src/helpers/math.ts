@@ -1,5 +1,5 @@
 import { mat4, vec2, vec3, vec4 } from 'gl-matrix'
-import { PerspectiveCamera } from '../cameras/perspective-camera'
+import PerspectiveCamera from '../cameras/perspective-camera'
 import { BoundingBox } from '../interfaces'
 
 /**

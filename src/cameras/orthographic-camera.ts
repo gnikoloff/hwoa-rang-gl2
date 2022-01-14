@@ -1,7 +1,7 @@
 import { mat4 } from 'gl-matrix'
 import Camera from './camera'
 
-export class OrthographicCamera extends Camera {
+export default class OrthographicCamera extends Camera {
   left: number
   right: number
   bottom: number
