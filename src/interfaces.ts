@@ -1,15 +1,11 @@
 import { vec3 } from 'gl-matrix'
 import { SceneNode } from '.'
 
-export type TypedArray =
-  | Int8Array
-  | Uint8Array
-  | Uint8ClampedArray
-  | Int16Array
-  | Uint16Array
-  | Int32Array
-  | Uint32Array
-  | Float32Array
+export interface ProjectedMouse {
+  rayStart: vec3
+  rayEnd: vec3
+  rayDirection: vec3
+}
 
 export type ShaderDefineValue = boolean | number
 
@@ -40,6 +36,18 @@ export interface Plane {
   heightSegments?: number
 }
 
+export interface Geometry {
+  vertexCount: number
+  vertexStride: number
+  interleavedArray: Float32Array
+  indicesArray: Uint16Array | Uint32Array
+}
+
+export interface PlaneGeometry extends Geometry {
+  width?: number
+  height?: number
+}
+
 export interface RoundBox {
   width?: number
   height?: number
@@ -48,14 +56,10 @@ export interface RoundBox {
   div?: number
 }
 
-export interface RoundBoxGeometry {
+export interface RoundBoxGeometry extends Geometry {
   width: number
   height: number
   depth: number
-  vertexCount: number
-  vertexStride: number
-  interleavedArray: Float32Array
-  indicesArray: Int16Array
 }
 
 export type iterateChildCallback = (node: SceneNode, idx: number) => void

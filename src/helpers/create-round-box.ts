@@ -120,7 +120,7 @@ export class VRot90 {
   // #endregion
 }
 
-export default ({
+const createRoundBox = ({
   width = 1,
   height = 1,
   depth = 1,
@@ -129,8 +129,10 @@ export default ({
 }: RoundBox = {}): RoundBoxGeometry => {
   // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+  const diff = width - height
+
   const panel = edge_grid(width, height, depth, radius, div) // Creates the Geo of just the Top Plane of the
-  // const sidePanel = edge_grid(width, height / 2, depth, radius, div) // Creates the Geo of just the Top Plane of the
+  const sidePanel = edge_grid(width * 0.5, height * 2, depth, radius, div) // Creates the Geo of just the Top Plane of the
   const geo = {
     verts: [],
     indices: [],
@@ -156,9 +158,9 @@ export default ({
     0,
   ) // Top - No Rotation, Kind of a Waste
   geo_rot_merge(geo, panel, VRot90.xp, 1) // Front
-  geo_rot_merge(geo, panel, VRot90.xp_yp, 2) // Left
+  geo_rot_merge(geo, sidePanel, VRot90.xp_yp, 2) // Left
   geo_rot_merge(geo, panel, VRot90.xp_yp_yp, 3) // Back
-  geo_rot_merge(geo, panel, VRot90.xp_yn, 4) // Right
+  geo_rot_merge(geo, sidePanel, VRot90.xp_yn, 4) // Right
   geo_rot_merge(geo, panel, VRot90.xp_xp, 5) // Bottom
 
   // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -324,3 +326,5 @@ function grid_tri_idx(x_cells, y_cells) {
 
   return ary
 }
+
+export default createRoundBox

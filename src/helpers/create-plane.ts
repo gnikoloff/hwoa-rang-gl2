@@ -1,6 +1,6 @@
-import { Plane } from '../interfaces'
+import { Plane, PlaneGeometry } from '../interfaces'
 
-export default (params: Plane = {}) => {
+const createPlane = (params: Plane = {}): PlaneGeometry => {
   const {
     width = 1,
     height = 1,
@@ -16,8 +16,8 @@ export default (params: Plane = {}) => {
   const numIndices = wSegs * hSegs * 6
 
   // Generate interleaved array
-  const verticesNormalUv = new Float32Array(num * 3 + num * 2)
-  const indices =
+  const interleavedArray = new Float32Array(num * 3 + num * 2)
+  const indicesArray =
     num > 65536 ? new Uint32Array(numIndices) : new Uint16Array(numIndices)
 
   let i = 0
@@ -29,19 +29,19 @@ export default (params: Plane = {}) => {
   const vDir = -1
   const depth = 0
   // pos + uv
-  const vertexDivisor = 3 + 2
+  const vertexStride = 3 + 2
 
   for (let iy = 0; iy <= hSegs; iy++) {
     const y = iy * segH - height / 2
     for (let ix = 0; ix <= wSegs; ix++, i++) {
       const x = ix * segW - width / 2
 
-      verticesNormalUv[i * vertexDivisor + 0] = x * uDir
-      verticesNormalUv[i * vertexDivisor + 1] = y * vDir
-      verticesNormalUv[i * vertexDivisor + 2] = depth / 2
+      interleavedArray[i * vertexStride + 0] = x * uDir
+      interleavedArray[i * vertexStride + 1] = y * vDir
+      interleavedArray[i * vertexStride + 2] = depth / 2
 
-      verticesNormalUv[i * vertexDivisor + 3] = ix / wSegs
-      verticesNormalUv[i * vertexDivisor + 4] = iy / hSegs
+      interleavedArray[i * vertexStride + 3] = ix / wSegs
+      interleavedArray[i * vertexStride + 4] = iy / hSegs
 
       if (iy === hSegs || ix === wSegs) continue
       const a = io + ix + iy * (wSegs + 1)
@@ -49,19 +49,22 @@ export default (params: Plane = {}) => {
       const c = io + ix + (iy + 1) * (wSegs + 1) + 1
       const d = io + ix + iy * (wSegs + 1) + 1
 
-      indices[ii * 6] = a
-      indices[ii * 6 + 1] = b
-      indices[ii * 6 + 2] = d
-      indices[ii * 6 + 3] = b
-      indices[ii * 6 + 4] = c
-      indices[ii * 6 + 5] = d
+      indicesArray[ii * 6] = a
+      indicesArray[ii * 6 + 1] = b
+      indicesArray[ii * 6 + 2] = d
+      indicesArray[ii * 6 + 3] = b
+      indicesArray[ii * 6 + 4] = c
+      indicesArray[ii * 6 + 5] = d
       ii++
     }
   }
 
   return {
-    vertexDivisor,
-    verticesNormalUv,
-    indices,
+    vertexCount: indicesArray.length,
+    vertexStride,
+    interleavedArray,
+    indicesArray,
   }
 }
+
+export default createPlane

@@ -15,8 +15,6 @@ export class SceneNode extends Transform {
   normalMatrix = mat4.create()
 
   uid: string
-  #levelIndex = 0
-
   traversable = true
 
   constructor(inputUID = uid(9)) {
@@ -25,15 +23,13 @@ export class SceneNode extends Transform {
   }
 
   get levelIndex(): number {
-    if (this.#levelIndex) {
-      return this.#levelIndex
-    }
+    let levelIndex = 0
     let parentNode = this.parentNode
     while (parentNode) {
-      this.#levelIndex++
+      levelIndex++
       parentNode = parentNode.parentNode
     }
-    return this.#levelIndex
+    return levelIndex
   }
 
   iterateChildren(callback: iterateChildCallback) {
@@ -111,9 +107,9 @@ export class SceneNode extends Transform {
     return outNode
   }
 
-  render(): void {
+  render(timeMS: DOMHighResTimeStamp): void {
     for (let i = 0; i < this.children.length; i++) {
-      this.children[i].render()
+      this.children[i].render(timeMS)
     }
   }
 }

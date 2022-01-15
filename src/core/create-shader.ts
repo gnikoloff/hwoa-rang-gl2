@@ -12,7 +12,7 @@ const createShader = (
   gl: WebGL2RenderingContext,
   shaderType: GLenum,
   shaderSource: string,
-  defines: { [key: string]: ShaderDefineValue },
+  defines: { [key: string]: ShaderDefineValue } = {},
 ): WebGLShader => {
   let shaderDefinesString = ''
   for (const [key, value] of Object.entries(defines)) {
