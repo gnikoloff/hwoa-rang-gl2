@@ -1,6 +1,6 @@
 import { mat4, vec2, vec3, vec4 } from 'gl-matrix'
+import { BoundingBox, ProjectedMouse } from '../interfaces'
 import PerspectiveCamera from '../cameras/perspective-camera'
-import { BoundingBox } from '../interfaces'
 
 /**
  * Clamp number to a given range
@@ -13,7 +13,7 @@ export const clamp = (num: number, min: number, max: number): number =>
   Math.min(Math.max(num, min), max)
 
 /**
- *
+ * Maps a number from one range to another
  * @param {number} val
  * @param {number} inMin
  * @param {number} inMax
@@ -53,7 +53,8 @@ export const normalizeNumber = (
 ): number => (val - min) / (max - min)
 
 /**
- *
+ * Used when creating round-cube geometry edge vertices
+ * @private
  * @param {number} t
  * @returns {number}
  */
@@ -70,52 +71,56 @@ export const triangleWave = (t: number): number => {
  */
 export const deg2Rad = (deg: number): number => (deg * Math.PI) / 180
 
-const vec4Clip = vec4.create()
-const vec4Eye = vec4.create()
-const vec4World = vec4.create()
-const ray = vec3.create()
-const rayStart = vec3.create()
-const rayEnd = vec3.create()
-const rayMul = vec3.create()
-const rayDirection = vec3.create()
-const matInvProjection = mat4.create()
+/**
+ * Convert radian to degree
+ * @param {number} deg
+ * @returns {number}
+ */
+export const rad2Deg = (rad: number): number => (rad * 180) / Math.PI
 
-// https://stackoverflow.com/questions/20140711/picking-in-3d-with-ray-tracing-using-ninevehgl-or-opengl-i-phone
 /**
  * Project a mouse coord in NDC space to world space
+ * @see https://stackoverflow.com/questions/20140711/picking-in-3d-with-ray-tracing-using-ninevehgl-or-opengl-i-phone
  * @param {vec2} normMouseCoords
  * @param {PerspectiveCamera} camera
  * @param {number} rayScale
- * @returns
+ * @returns {ProjectedMouse}
  */
 export const projectMouseToWorldSpace = (
   normMouseCoords: vec2,
   camera: PerspectiveCamera,
   rayScale = 999,
-) => {
+): ProjectedMouse => {
   const normX = normMouseCoords[0]
   const normY = normMouseCoords[1]
   // Homogeneous clip coordinates
-  vec4.set(vec4Clip, normX, normY, -1, 1)
+  const vec4Clip = vec4.fromValues(normX, normY, -1, 1)
   // 4D eye (camera) coordinates
-  vec4.zero(vec4Eye)
+  const vec4Eye = vec4.create()
+  const matInvProjection = mat4.create()
   mat4.invert(matInvProjection, camera.projectionMatrix)
   vec4.transformMat4(vec4Eye, vec4Clip, matInvProjection)
   vec4Eye[2] = -1
   vec4Eye[3] = 0
   // 4D world coordinates
-  vec4.zero(vec4World)
+  const vec4World = vec4.create()
   vec4.transformMat4(vec4World, vec4Eye, camera.viewMatrixInverse)
-  vec3.set(ray, vec4World[0], vec4World[1], vec4World[2])
+  const ray = vec3.fromValues(vec4World[0], vec4World[1], vec4World[2])
   vec3.normalize(ray, ray)
   // get rayStart and rayEnd
-  vec3.set(rayStart, camera.position[0], camera.position[1], camera.position[2])
+  const rayStart = vec3.fromValues(
+    camera.position[0],
+    camera.position[1],
+    camera.position[2],
+  )
+  const rayEnd = vec3.create()
   vec3.copy(rayEnd, rayStart)
+  const rayMul = vec3.create()
   vec3.copy(rayMul, ray)
   vec3.scale(rayMul, ray, rayScale)
   vec3.add(rayEnd, rayStart, rayMul)
   // get direction between two points
-  vec3.zero(rayDirection)
+  const rayDirection = vec3.create()
   vec3.subtract(rayDirection, rayEnd, rayStart)
 
   return {
@@ -125,19 +130,169 @@ export const projectMouseToWorldSpace = (
   }
 }
 
-// https://gdbooks.gitbooks.io/3dcollisions/content/Chapter3/raycast_aabb.html
+/**
+ * Do a line-plane intersection
+ * @param {vec3} planePos
+ * @param {vec3} planeNormal
+ * @param {vec3} rayStart
+ * @param {vec3} rayEnd
+ * @returns {[number, vec3] | null} - time along the ray normal and intersectPoint as vec3 if success, null if not
+ */
+export const intersectRayWithPlane = (
+  rayStart: vec3,
+  rayEnd: vec3,
+  planePos: vec3,
+  planeNormal: vec3,
+): [number, vec3] | null => {
+  const rayDirection = vec3.create()
+  vec3.sub(rayDirection, rayEnd, rayStart)
+  const rayToPlaneDelta = vec3.create()
+  vec3.sub(rayToPlaneDelta, planePos, rayStart)
+
+  // project ray to plane distance vector onto plane normal
+  const wp = vec3.dot(rayToPlaneDelta, planeNormal)
+  // project ray direction distance vector onto plane normal
+  const vp = vec3.dot(rayDirection, planeNormal)
+
+  // check for zero
+  const time = wp / vp
+  if (time >= 0) {
+    // find Intersection Point
+    const intersectPoint = vec3.create()
+    vec3.scale(intersectPoint, rayDirection, time)
+    vec3.add(intersectPoint, intersectPoint, rayStart)
+    return [time, intersectPoint]
+  }
+  return null
+}
+
+/**
+ * Test ray against a triangle
+ * @see https://www.youtube.com/watch?v=OOqDkG035T0
+ * @param {vec3} rayStart
+ * @param {vec3} rayEnd
+ * @param {[vec3, vec3, vec3]} verticesArr - The three vertices of the triangle in world space
+ * @returns {[number, vec3] | null} - time along the ray normal and intersectPoint as vec3 if success, null if not
+ */
+export const intersectRayWithTriangle = (
+  rayStart: vec3,
+  rayEnd: vec3,
+  verticesArr: [vec3, vec3, vec3],
+): [number, vec3] | null => {
+  // calculate position and normal of the plane the triangle positions occupy
+  const planeNormal = vec3.create()
+  const v0 = verticesArr[0] // any point on the triangle will do as a start
+  const v1 = verticesArr[1]
+  const v2 = verticesArr[2]
+  const edge0 = vec3.create()
+  vec3.sub(edge0, v1, v0)
+  // const edge1 = vec3.create()
+  // vec3.sub(edge1, v2, v1)
+  const edge2 = vec3.create()
+  vec3.sub(edge2, v2, v0)
+
+  // cross (v1 - v0, v2 - v0) counter clockwise to get correct direction
+  vec3.cross(planeNormal, edge0, edge2)
+  // find ratio (time) of intersection of ray vector with the plane the triangle occupies
+  const [rayTime, intersectPoint] = intersectRayWithPlane(
+    rayStart,
+    rayEnd,
+    v0,
+    planeNormal,
+  )
+
+  if (intersectPoint === null) {
+    return null
+  }
+
+  const edge = vec3.create() // length of edge
+  const intersectPointLength = vec3.create() // intersection point length from starting of edge
+  const crossProductEdgeIntersectPointLength = vec3.create()
+
+  for (let i = 0, ii; i < verticesArr.length; i++) {
+    ii = (i + 1) % 3 // wrap index through v1, v2, v0
+    // edge length
+    vec3.copy(edge, verticesArr[ii])
+    vec3.sub(edge, edge, verticesArr[i])
+    // intersection to edge length
+    vec3.copy(intersectPointLength, intersectPoint)
+    vec3.sub(intersectPointLength, intersectPointLength, verticesArr[i])
+    // cross product of edge and intersectPointLength
+    vec3.cross(crossProductEdgeIntersectPointLength, edge, intersectPointLength)
+    if (vec3.dot(planeNormal, crossProductEdgeIntersectPointLength) < 0) {
+      return null
+    }
+  }
+  return [rayTime, intersectPoint]
+}
+
+/**
+ * Test ray against a quad
+ * @param {vec3} rayStart
+ * @param {vec3} rayEnd
+ * @param {[vec3, vec3, vec3, vec3]} verticesArr - The four vertices of the quad in world space
+ * @returns {[number, vec3] | null} - time along the ray normal and intersectPoint as vec3 if success, null if not
+ */
+export const intersectRayWithQuad = (
+  rayStart: vec3,
+  rayEnd: vec3,
+  verticesArr: [vec3, vec3, vec3, vec3],
+): [number, vec3] | null => {
+  const v0 = verticesArr[0]
+  const v1 = verticesArr[1]
+  const v2 = verticesArr[2]
+  // const v3 = verticesArr[3]
+
+  // figure out the normal direction of the quad
+  // take 3 sequential corners, get two vector lengths for two edges and cross apply in clockwise order
+  const planeNormal = vec3.create()
+  const edge0 = vec3.create()
+  vec3.sub(edge0, v0, v1)
+  const edge1 = vec3.create()
+  vec3.sub(edge1, v2, v1)
+  vec3.cross(planeNormal, edge1, edge0)
+
+  const [rayTime, intersectPoint] = intersectRayWithPlane(
+    rayStart,
+    rayEnd,
+    v0,
+    planeNormal,
+  )
+  if (intersectPoint === null) {
+    return null
+  }
+
+  vec3.sub(edge0, v1, v0)
+  let plen = vec3.create()
+  vec3.sub(plen, intersectPoint, v0)
+  let t = vec3.dot(plen, edge0) / vec3.dot(edge0, edge0)
+  if (t < 0 || t > 1) {
+    return null
+  }
+
+  vec3.sub(edge1, v2, v1)
+  vec3.sub(plen, intersectPoint, v1)
+  t = vec3.dot(plen, edge1) / vec3.dot(edge1, edge1)
+  if (t < 0 || t > 1) {
+    return null
+  }
+
+  return [rayTime, intersectPoint]
+}
+
 /**
  * Test ray against Axis Aligned Bounding Box
+ * @see https://gdbooks.gitbooks.io/3dcollisions/content/Chapter3/raycast_aabb.html
  * @param {BoundingBox} box
  * @param {vec3} origin
  * @param {vec3} direction
- * @returns
+ * @returns {number | null}
  */
 export const intersectRayWithAABB = (
   box: BoundingBox,
   origin: vec3,
   direction: vec3,
-): [number, boolean] => {
+): number | null => {
   const tMinX = (box.min[0] - origin[0]) / direction[0]
   const tMaxX = (box.max[0] - origin[0]) / direction[0]
   const tMinY = (box.min[1] - origin[1]) / direction[1]
@@ -153,18 +308,13 @@ export const intersectRayWithAABB = (
     Math.max(tMinZ, tMaxZ),
   )
 
-  let t: number
-
   if (tmax < 0) {
-    t = tmax
-    return [t, false]
+    return null
   }
 
   if (tmin > tmax) {
-    t = tmax
-    return [t, false]
+    return null
   }
 
-  t = tmin
-  return [t, true]
+  return tmin
 }
