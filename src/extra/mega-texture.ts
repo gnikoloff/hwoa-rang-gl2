@@ -1,8 +1,11 @@
 import { vec2 } from 'gl-matrix'
 import { Atlas } from 'texture-atlas'
 
-let textureSize: vec2 = [2048, 2048]
-let textureFormat = 0x1907
+const _c = document.createElement('canvas')
+const _gl = _c.getContext('webgl2')!
+
+let textureSize: vec2 = [_gl.MAX_TEXTURE_SIZE, _gl.MAX_TEXTURE_SIZE]
+let textureFormat = _gl.RGB
 
 let instance: MegaTexture
 let gl: WebGL2RenderingContext
@@ -31,15 +34,10 @@ export default class MegaTexture {
     gl = glContext
   }
 
-  static get instance(): MegaTexture {
-    if (!textureSize) {
-      throw new Error(
-        'You must set up a textureSize first via MegaTexture.setSize()!',
-      )
-    }
+  static getInstance(): MegaTexture {
     if (!gl) {
       throw new Error(
-        'You must provide a WebGL2RenderingContext first via MegaTexture.setGL()!',
+        'You must provide a WebGL2RenderingContext first via setting the MegaTexture.gl property!',
       )
     }
     if (!instance) {
