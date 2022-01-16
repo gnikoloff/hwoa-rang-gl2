@@ -10,9 +10,9 @@ export default class SceneNode extends Transform {
   normalMatrix = mat4.create()
 
   uid = uid(9)
-  name: string
+  name: string | null
 
-  constructor(name: string) {
+  constructor(name: string | null) {
     super()
     this.name = name
   }

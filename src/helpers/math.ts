@@ -132,20 +132,18 @@ export const projectMouseToWorldSpace = (
 
 /**
  * Do a line-plane intersection
+ * @param {vec3} rayStart
+ * @param {vec3} rayDirection
  * @param {vec3} planePos
  * @param {vec3} planeNormal
- * @param {vec3} rayStart
- * @param {vec3} rayEnd
  * @returns {[number, vec3] | null} - time along the ray normal and intersectPoint as vec3 if success, null if not
  */
 export const intersectRayWithPlane = (
   rayStart: vec3,
-  rayEnd: vec3,
+  rayDirection: vec3,
   planePos: vec3,
   planeNormal: vec3,
 ): [number, vec3] | null => {
-  const rayDirection = vec3.create()
-  vec3.sub(rayDirection, rayEnd, rayStart)
   const rayToPlaneDelta = vec3.create()
   vec3.sub(rayToPlaneDelta, planePos, rayStart)
 
@@ -170,13 +168,13 @@ export const intersectRayWithPlane = (
  * Test ray against a triangle
  * @see https://www.youtube.com/watch?v=OOqDkG035T0
  * @param {vec3} rayStart
- * @param {vec3} rayEnd
+ * @param {vec3} rayDirection
  * @param {[vec3, vec3, vec3]} verticesArr - The three vertices of the triangle in world space
  * @returns {[number, vec3] | null} - time along the ray normal and intersectPoint as vec3 if success, null if not
  */
 export const intersectRayWithTriangle = (
   rayStart: vec3,
-  rayEnd: vec3,
+  rayDirection: vec3,
   verticesArr: [vec3, vec3, vec3],
 ): [number, vec3] | null => {
   // calculate position and normal of the plane the triangle positions occupy
@@ -194,7 +192,12 @@ export const intersectRayWithTriangle = (
   // cross (v1 - v0, v2 - v0) counter clockwise to get correct direction
   vec3.cross(planeNormal, edge0, edge2)
   // find ratio (time) of intersection of ray vector with the plane the triangle occupies
-  const interesction = intersectRayWithPlane(rayStart, rayEnd, v0, planeNormal)
+  const interesction = intersectRayWithPlane(
+    rayStart,
+    rayDirection,
+    v0,
+    planeNormal,
+  )
 
   if (!interesction) {
     return null
@@ -225,13 +228,13 @@ export const intersectRayWithTriangle = (
 /**
  * Test ray against a quad
  * @param {vec3} rayStart
- * @param {vec3} rayEnd
+ * @param {vec3} rayDirection
  * @param {[vec3, vec3, vec3, vec3]} verticesArr - The four vertices of the quad in world space
  * @returns {[number, vec3] | null} - time along the ray normal and intersectPoint as vec3 if success, null if not
  */
 export const intersectRayWithQuad = (
   rayStart: vec3,
-  rayEnd: vec3,
+  rayDirection: vec3,
   verticesArr: [vec3, vec3, vec3, vec3],
 ): [number, vec3] | null => {
   const v0 = verticesArr[0]
@@ -248,7 +251,12 @@ export const intersectRayWithQuad = (
   vec3.sub(edge1, v2, v1)
   vec3.cross(planeNormal, edge1, edge0)
 
-  const intersection = intersectRayWithPlane(rayStart, rayEnd, v0, planeNormal)
+  const intersection = intersectRayWithPlane(
+    rayStart,
+    rayDirection,
+    v0,
+    planeNormal,
+  )
   if (!intersection) {
     return null
   }
