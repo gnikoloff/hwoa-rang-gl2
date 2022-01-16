@@ -14,6 +14,8 @@ import Transform from './core/transform'
 import SceneNode from './core/scene-node'
 import Drawable from './core/drawable'
 
+import MegaTexture from './extra/mega-texture'
+
 export * from './helpers/math'
 export * from './interfaces'
 
@@ -30,4 +32,5 @@ export {
   Transform,
   SceneNode,
   Drawable,
+  MegaTexture,
 }

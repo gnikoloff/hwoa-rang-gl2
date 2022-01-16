@@ -12,7 +12,7 @@ export default class SceneNode extends Transform {
   uid = uid(9)
   name: string | null
 
-  constructor(name: string | null) {
+  constructor(name: string | null = null) {
     super()
     this.name = name
   }
