@@ -10,8 +10,9 @@ import PerspectiveCamera from './cameras/perspective-camera'
 import OrthographicCamera from './cameras/orthographic-camera'
 import CameraController from './cameras/camera-controller'
 
-export { Transform } from './extra/transform'
-export { SceneNode } from './extra/scene-node'
+import Transform from './core/transform'
+import SceneNode from './core/scene-node'
+import Drawable from './core/drawable'
 
 export * from './helpers/math'
 export * from './interfaces'
@@ -26,4 +27,7 @@ export {
   PerspectiveCamera,
   OrthographicCamera,
   CameraController,
+  Transform,
+  SceneNode,
+  Drawable,
 }

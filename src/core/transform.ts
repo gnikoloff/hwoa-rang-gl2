@@ -1,6 +1,6 @@
 import { mat4, vec3 } from 'gl-matrix'
 
-export class Transform {
+export default class Transform {
   public position = vec3.fromValues(0, 0, 0)
   public rotation = vec3.fromValues(0, 0, 0)
   public scale = vec3.fromValues(1, 1, 1)

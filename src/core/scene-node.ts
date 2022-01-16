@@ -1,25 +1,20 @@
 import { mat4 } from 'gl-matrix'
 import { uid } from 'uid'
-import {
-  findChildCallback,
-  iterateChildCallback,
-  Transform,
-  traverseCallback,
-} from '..'
+import { findNodeInTreeCallback, Transform, traverseCallback } from '..'
 
-export class SceneNode extends Transform {
+export default class SceneNode extends Transform {
   parentNode: SceneNode | null = null
   children: SceneNode[] = []
 
   worldMatrix = mat4.create()
   normalMatrix = mat4.create()
 
-  uid: string
-  traversable = true
+  uid = uid(9)
+  name: string
 
-  constructor(inputUID = uid(9)) {
+  constructor(name: string) {
     super()
-    this.uid = inputUID
+    this.name = name
   }
 
   get levelIndex(): number {
@@ -30,10 +25,6 @@ export class SceneNode extends Transform {
       parentNode = parentNode.parentNode
     }
     return levelIndex
-  }
-
-  iterateChildren(callback: iterateChildCallback) {
-    this.children.filter(({ traversable }) => traversable).forEach(callback)
   }
 
   setParent(parentNode: SceneNode | null = null): this {
@@ -61,6 +52,7 @@ export class SceneNode extends Transform {
     }
     mat4.invert(this.normalMatrix, this.worldMatrix)
     mat4.transpose(this.normalMatrix, this.normalMatrix)
+
     this.children.forEach((child) => {
       child.updateWorldMatrix(this.worldMatrix)
     })
@@ -68,9 +60,6 @@ export class SceneNode extends Transform {
   }
 
   traverse(callback: traverseCallback, depth = 0): void {
-    if (!this.traversable) {
-      return
-    }
     callback(this, depth)
     depth++
     for (let i = 0; i < this.children.length; i++) {
@@ -79,7 +68,7 @@ export class SceneNode extends Transform {
     }
   }
 
-  findChild(callback: findChildCallback): SceneNode | null {
+  findChild(callback: findNodeInTreeCallback): SceneNode | null {
     if (callback(this)) {
       return this
     }
@@ -93,16 +82,46 @@ export class SceneNode extends Transform {
     return outNode
   }
 
-  findChildByUID(uid: string): SceneNode | null {
-    if (uid === this.uid) {
+  findChildByName(name: string): SceneNode | null {
+    if (this.name === name) {
       return this
     }
     let outNode: SceneNode | null = null
     for (let i = 0; i < this.children.length; i++) {
       const child = this.children[i]
-      if ((outNode = child.findChildByUID(uid))) {
+      if ((outNode = child.findChildByName(name))) {
         break
       }
+    }
+    return outNode
+  }
+
+  findParent(callback: findNodeInTreeCallback): SceneNode | null {
+    if (callback(this)) {
+      return this
+    }
+    let outNode: SceneNode | null = null
+    let parentNode = this.parentNode
+    while (parentNode) {
+      if ((outNode = parentNode.findParent(callback))) {
+        break
+      }
+      parentNode = parentNode?.parentNode
+    }
+    return outNode
+  }
+
+  findParentByName(name: string): SceneNode | null {
+    if (this.name === name) {
+      return this
+    }
+    let outNode: SceneNode | null = null
+    let parentNode = this.parentNode
+    while (parentNode) {
+      if ((outNode = parentNode.findParentByName(name))) {
+        break
+      }
+      parentNode = parentNode?.parentNode
     }
     return outNode
   }

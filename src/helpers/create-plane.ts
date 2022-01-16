@@ -60,6 +60,8 @@ const createPlane = (params: Plane = {}): PlaneGeometry => {
   }
 
   return {
+    width,
+    height,
     vertexCount: indicesArray.length,
     vertexStride,
     interleavedArray,

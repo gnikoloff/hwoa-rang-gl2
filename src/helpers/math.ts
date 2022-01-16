@@ -194,16 +194,12 @@ export const intersectRayWithTriangle = (
   // cross (v1 - v0, v2 - v0) counter clockwise to get correct direction
   vec3.cross(planeNormal, edge0, edge2)
   // find ratio (time) of intersection of ray vector with the plane the triangle occupies
-  const [rayTime, intersectPoint] = intersectRayWithPlane(
-    rayStart,
-    rayEnd,
-    v0,
-    planeNormal,
-  )
+  const interesction = intersectRayWithPlane(rayStart, rayEnd, v0, planeNormal)
 
-  if (intersectPoint === null) {
+  if (!interesction) {
     return null
   }
+  const [rayTime, intersectPoint] = interesction
 
   const edge = vec3.create() // length of edge
   const intersectPointLength = vec3.create() // intersection point length from starting of edge
@@ -252,15 +248,12 @@ export const intersectRayWithQuad = (
   vec3.sub(edge1, v2, v1)
   vec3.cross(planeNormal, edge1, edge0)
 
-  const [rayTime, intersectPoint] = intersectRayWithPlane(
-    rayStart,
-    rayEnd,
-    v0,
-    planeNormal,
-  )
-  if (intersectPoint === null) {
+  const intersection = intersectRayWithPlane(rayStart, rayEnd, v0, planeNormal)
+  if (!intersection) {
     return null
   }
+
+  const [rayTime, intersectPoint] = intersection
 
   vec3.sub(edge0, v1, v0)
   let plen = vec3.create()
@@ -289,9 +282,9 @@ export const intersectRayWithQuad = (
  * @returns {number | null}
  */
 export const intersectRayWithAABB = (
-  box: BoundingBox,
   origin: vec3,
   direction: vec3,
+  box: BoundingBox,
 ): number | null => {
   const tMinX = (box.min[0] - origin[0]) / direction[0]
   const tMaxX = (box.max[0] - origin[0]) / direction[0]

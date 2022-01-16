@@ -30,9 +30,21 @@ export interface BoundingBox {
 }
 
 export interface Plane {
+  /**
+   * @default 1
+   */
   width?: number
+  /**
+   * @default 1
+   */
   height?: number
+  /**
+   * @default 1
+   */
   widthSegments?: number
+  /**
+   * @default 1
+   */
   heightSegments?: number
 }
 
@@ -44,15 +56,30 @@ export interface Geometry {
 }
 
 export interface PlaneGeometry extends Geometry {
-  width?: number
-  height?: number
+  width: number
+  height: number
 }
 
 export interface RoundBox {
+  /**
+   * @default 1
+   */
   width?: number
+  /**
+   * @default 1
+   */
   height?: number
+  /**
+   * @default 1
+   */
   depth?: number
+  /**
+   * @default 0.5
+   */
   radius?: number
+  /**
+   * @default 4
+   */
   div?: number
 }
 
@@ -62,8 +89,6 @@ export interface RoundBoxGeometry extends Geometry {
   depth: number
 }
 
-export type iterateChildCallback = (node: SceneNode, idx: number) => void
-
 export type traverseCallback = (node: SceneNode, depthLevel: number) => void
 
-export type findChildCallback = (node: SceneNode) => SceneNode | null
+export type findNodeInTreeCallback = (node: SceneNode) => SceneNode | null
