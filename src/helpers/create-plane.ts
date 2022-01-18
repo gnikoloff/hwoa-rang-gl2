@@ -6,6 +6,7 @@ const createPlane = (params: Plane = {}): PlaneGeometry => {
     height = 1,
     widthSegments = 1,
     heightSegments = 1,
+    flipUVy = false,
   } = params
 
   const wSegs = widthSegments
@@ -41,7 +42,9 @@ const createPlane = (params: Plane = {}): PlaneGeometry => {
       interleavedArray[i * vertexStride + 2] = depth / 2
 
       interleavedArray[i * vertexStride + 3] = ix / wSegs
-      interleavedArray[i * vertexStride + 4] = iy / hSegs
+      interleavedArray[i * vertexStride + 4] = flipUVy
+        ? 1 - iy / hSegs
+        : iy / hSegs
 
       if (iy === hSegs || ix === wSegs) continue
       const a = io + ix + iy * (wSegs + 1)

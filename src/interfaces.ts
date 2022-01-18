@@ -68,6 +68,10 @@ export interface Plane {
    * @default 1
    */
   heightSegments?: number
+  /**
+   * @default false
+   */
+  flipUVy?: boolean
 }
 
 export interface RoundBox {
