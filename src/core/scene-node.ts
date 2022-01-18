@@ -4,15 +4,26 @@ import { findNodeInTreeCallback, Transform, traverseCallback } from '..'
 
 export default class SceneNode extends Transform {
   parentNode: SceneNode | null = null
-  children: SceneNode[] = []
+  protected _children: SceneNode[] = []
 
   worldMatrix = mat4.create()
   normalMatrix = mat4.create()
 
   uid = uid(9)
-  name: string | null
+  name?: string
 
-  constructor(name: string | null = null) {
+  get children(): SceneNode[] {
+    return this._children
+  }
+
+  get siblings(): SceneNode[] {
+    if (!this.parentNode) {
+      return []
+    }
+    return this.parentNode._children
+  }
+
+  constructor(name: string | undefined) {
     super()
     this.name = name
   }
@@ -29,15 +40,20 @@ export default class SceneNode extends Transform {
 
   setParent(parentNode: SceneNode | null = null): this {
     if (this.parentNode) {
-      const idx = this.parentNode.children.indexOf(this)
+      const idx = this.parentNode._children.indexOf(this)
       if (idx >= 0) {
-        this.parentNode.children.splice(idx, 1)
+        this.parentNode._children.splice(idx, 1)
       }
     }
     if (parentNode) {
-      parentNode.children.push(this)
+      parentNode.addChild(this)
     }
     this.parentNode = parentNode
+    return this
+  }
+
+  addChild(childNode: SceneNode): this {
+    this._children.push(childNode)
     return this
   }
 
@@ -52,18 +68,17 @@ export default class SceneNode extends Transform {
     }
     mat4.invert(this.normalMatrix, this.worldMatrix)
     mat4.transpose(this.normalMatrix, this.normalMatrix)
-
-    this.children.forEach((child) => {
-      child.updateWorldMatrix(this.worldMatrix)
-    })
+    for (let i = 0; i < this._children.length; i++) {
+      this._children[i].updateWorldMatrix(this.worldMatrix)
+    }
     return this
   }
 
   traverse(callback: traverseCallback, depth = 0): void {
     callback(this, depth)
     depth++
-    for (let i = 0; i < this.children.length; i++) {
-      const child = this.children[i]
+    for (let i = 0; i < this._children.length; i++) {
+      const child = this._children[i]
       child.traverse(callback, depth)
     }
   }
@@ -73,8 +88,8 @@ export default class SceneNode extends Transform {
       return this
     }
     let outNode: SceneNode | null = null
-    for (let i = 0; i < this.children.length; i++) {
-      const child = this.children[i]
+    for (let i = 0; i < this._children.length; i++) {
+      const child = this._children[i]
       if ((outNode = child.findChild(callback))) {
         break
       }
@@ -87,8 +102,8 @@ export default class SceneNode extends Transform {
       return this
     }
     let outNode: SceneNode | null = null
-    for (let i = 0; i < this.children.length; i++) {
-      const child = this.children[i]
+    for (let i = 0; i < this._children.length; i++) {
+      const child = this._children[i]
       if ((outNode = child.findChildByName(name))) {
         break
       }
@@ -127,8 +142,8 @@ export default class SceneNode extends Transform {
   }
 
   render(timeMS: DOMHighResTimeStamp): void {
-    for (let i = 0; i < this.children.length; i++) {
-      this.children[i].render(timeMS)
+    for (let i = 0; i < this._children.length; i++) {
+      this._children[i].render(timeMS)
     }
   }
 }
