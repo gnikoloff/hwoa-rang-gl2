@@ -141,9 +141,9 @@ export default class SceneNode extends Transform {
     return outNode
   }
 
-  render(timeMS: DOMHighResTimeStamp): void {
+  render(): void {
     for (let i = 0; i < this._children.length; i++) {
-      this._children[i].render(timeMS)
+      this._children[i].render()
     }
   }
 }

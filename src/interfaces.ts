@@ -29,6 +29,28 @@ export interface BoundingBox {
   max: vec3
 }
 
+export interface Geometry {
+  vertexCount: number
+  vertexStride: number
+  interleavedArray: Float32Array
+  indicesArray: Uint16Array | Uint32Array
+}
+
+export interface PlaneGeometry extends Geometry {
+  width: number
+  height: number
+}
+
+export interface BoxGeometry extends Geometry {
+  width: number
+  height: number
+  depth: number
+}
+
+export type traverseCallback = (node: SceneNode, depthLevel: number) => void
+
+export type findNodeInTreeCallback = (node: SceneNode) => SceneNode | null
+
 export interface Plane {
   /**
    * @default 1
@@ -46,18 +68,6 @@ export interface Plane {
    * @default 1
    */
   heightSegments?: number
-}
-
-export interface Geometry {
-  vertexCount: number
-  vertexStride: number
-  interleavedArray: Float32Array
-  indicesArray: Uint16Array | Uint32Array
-}
-
-export interface PlaneGeometry extends Geometry {
-  width: number
-  height: number
 }
 
 export interface RoundBox {
@@ -83,12 +93,33 @@ export interface RoundBox {
   div?: number
 }
 
-export interface RoundBoxGeometry extends Geometry {
-  width: number
-  height: number
-  depth: number
+export interface Box {
+  /**
+   * @defaultValue 1
+   */
+  width?: number
+  /**
+   * @defaultValue 1
+   */
+  height?: number
+  /**
+   * @defaultValue 1
+   */
+  depth?: number
+  /**
+   * @defaultValue 1
+   */
+  widthSegments?: number
+  /**
+   * @defaultValue 1
+   */
+  heightSegments?: number
+  /**
+   * @defaultValue 1
+   */
+  depthSegments?: number
+  /**
+   * @defaultValue false
+   */
+  uvOffsetEachFace?: boolean
 }
-
-export type traverseCallback = (node: SceneNode, depthLevel: number) => void
-
-export type findNodeInTreeCallback = (node: SceneNode) => SceneNode | null

@@ -17,7 +17,7 @@
 */
 
 import { vec3 } from 'gl-matrix'
-import { RoundBox, RoundBoxGeometry } from '../interfaces'
+import { RoundBox, BoxGeometry } from '../interfaces'
 import { normalizeNumber, triangleWave } from '../helpers/math'
 
 // Handle Simple 90 Degree Rotations without the use of Quat,Trig,Matrices
@@ -126,7 +126,7 @@ const createRoundBox = ({
   depth = 1,
   radius = 0.5,
   div = 4,
-}: RoundBox = {}): RoundBoxGeometry => {
+}: RoundBox = {}): BoxGeometry => {
   // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   const diff = width - height

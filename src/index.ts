@@ -4,6 +4,7 @@ import createUniformBlockInfo from './core/create-uniform-block-info'
 import createAndBindUBOToBase from './core/create-bind-ubo-to-base'
 
 import createPlane from './helpers/create-plane'
+import createBox from './helpers/create-box'
 import createRoundedBox from './helpers/create-round-box'
 
 import PerspectiveCamera from './cameras/perspective-camera'
@@ -25,6 +26,7 @@ export {
   createUniformBlockInfo,
   createAndBindUBOToBase,
   createPlane,
+  createBox,
   createRoundedBox,
   PerspectiveCamera,
   OrthographicCamera,
