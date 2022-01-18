@@ -63,4 +63,12 @@ export default class Drawable extends SceneNode {
     )
     return this
   }
+
+  destroy(): void {
+    const gl = this.gl
+    gl.deleteVertexArray(this.vao)
+    gl.deleteProgram(this.program)
+    this.uniformLocations = {}
+    this.attributeLocations = {}
+  }
 }
