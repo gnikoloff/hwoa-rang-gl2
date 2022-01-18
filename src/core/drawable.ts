@@ -21,7 +21,7 @@ export default class Drawable extends SceneNode {
     vertexShaderSource: string,
     fragmentShaderSource: string,
     shaderDefines: { [name: string]: ShaderDefineValue },
-    name: string | null = null,
+    name?: string,
   ) {
     super(name)
     this.gl = gl
@@ -33,14 +33,13 @@ export default class Drawable extends SceneNode {
       fragmentShaderSource,
       shaderDefines,
     )
-    const worldMatrixLoc = gl.getUniformLocation(this.program, 'u_modelMatrix')!
+    const worldMatrixLoc = gl.getUniformLocation(this.program, 'u_worldMatrix')!
 
     if (!worldMatrixLoc) {
       throw new Error(
-        'Each Drawable is expected to have a model matrix implemented in shader',
+        'Each Drawable is expected to have a mat4 u_worldMatrix implemented in shader',
       )
     }
-
     this.uniformLocations.worldMatrix = worldMatrixLoc
   }
 
