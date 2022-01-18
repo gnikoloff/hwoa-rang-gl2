@@ -264,7 +264,7 @@ export const intersectRayWithQuad = (
   const [rayTime, intersectPoint] = intersection
 
   vec3.sub(edge0, v1, v0)
-  let plen = vec3.create()
+  const plen = vec3.create()
   vec3.sub(plen, intersectPoint, v0)
   let t = vec3.dot(plen, edge0) / vec3.dot(edge0, edge0)
   if (t < 0 || t > 1) {
