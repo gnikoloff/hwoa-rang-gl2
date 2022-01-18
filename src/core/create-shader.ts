@@ -1,5 +1,7 @@
 import { ShaderDefineValue } from '..'
 
+const SHADER_DEFINES_HOOK = '-- DEFINES_HOOK --'
+
 /**
  * Create and compile WebGLShader
  * @param {WebGL2RenderingContext)} gl
@@ -19,9 +21,13 @@ const createShader = (
     if (typeof value === 'boolean' && !value) {
       continue
     }
-    shaderDefinesString += `#define ${key} ${value}\n`
+    let valueFormatted = `${value}`
+    if (typeof value === 'number' && Number.isInteger(value)) {
+      valueFormatted += '.0'
+    }
+    shaderDefinesString += `#define ${key} ${valueFormatted}\n`
   }
-  shaderSource = shaderSource.replace('-- DEFINES_HOOK --', shaderDefinesString)
+  shaderSource = shaderSource.replace(SHADER_DEFINES_HOOK, shaderDefinesString)
 
   const shader: WebGLShader = gl.createShader(shaderType)!
   gl.shaderSource(shader, shaderSource)
