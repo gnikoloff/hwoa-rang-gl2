@@ -23,7 +23,7 @@ export default class SceneNode extends Transform {
     return this.parentNode._children
   }
 
-  constructor(name: string | undefined) {
+  constructor(name: string | undefined = undefined) {
     super()
     this.name = name
   }
