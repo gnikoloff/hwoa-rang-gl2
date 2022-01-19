@@ -24,6 +24,14 @@ export interface UBOVariableInfo {
   offset: GLuint
 }
 
+export interface FramebufferInfo {
+  width: number
+  height: number
+  framebuffer: WebGLFramebuffer
+  texture: WebGLTexture
+  depthTexture?: WebGLTexture
+}
+
 export interface UBOInfo {
   blockIndex: GLuint
   blockSize: GLuint

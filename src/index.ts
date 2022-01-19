@@ -3,6 +3,7 @@ import createShader from './core/create-shader'
 import createUniformBlockInfo from './core/create-uniform-block-info'
 import createAndBindUBOToBase from './core/create-bind-ubo-to-base'
 import uploadUniformVariable from './core/upload-uniform-variable'
+import createFramebuffer from './core/create-framebuffer'
 
 import createPlane from './helpers/create-plane'
 import createBox from './helpers/create-box'
@@ -27,6 +28,7 @@ export {
   createUniformBlockInfo,
   createAndBindUBOToBase,
   uploadUniformVariable,
+  createFramebuffer,
   createPlane,
   createBox,
   createRoundedBox,

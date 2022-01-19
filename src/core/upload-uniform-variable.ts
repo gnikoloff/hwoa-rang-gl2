@@ -4,7 +4,7 @@ import { UniformValue } from '..'
 // https://github.com/oframe/ogl/blob/0fc80bbe0eeffc9abb21872b1bd6085dbc29df82/src/core/Program.js#L213
 
 /**
- * @description Upload value to GPU using appropriate uniform[1234][fi][v]() call
+ * @description Upload value to GPU using appropriate uniform[Matrix][1234][fi]() call
  * @param {WebGL2RenderingContext} gl
  * @param {GLuint} type
  * @param {UniformValue.} value

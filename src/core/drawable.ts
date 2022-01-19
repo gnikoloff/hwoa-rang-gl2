@@ -42,22 +42,21 @@ export default class Drawable extends SceneNode {
       fragmentShaderSource,
       shaderDefines,
     )
-    const worldMatrixLoc = gl.getUniformLocation(
-      this.program,
-      Drawable.WORLD_MATRIX_UNIFORM_NAME,
-    )!
+    // @ts-ignore
+    this.program.__SPECTOR_Metadata = { name, shaderDefines }
 
-    if (!worldMatrixLoc) {
+    const worldMatrixSet = this.setUniform(Drawable.WORLD_MATRIX_UNIFORM_NAME, {
+      type: gl.FLOAT_MAT4,
+    })
+
+    if (!worldMatrixSet) {
       throw new Error(
         `Each Drawable is expected to have a mat4 ${Drawable.WORLD_MATRIX_UNIFORM_NAME} implemented in shader`,
       )
     }
-    this.setUniform(Drawable.WORLD_MATRIX_UNIFORM_NAME, {
-      type: gl.FLOAT_MAT4,
-    })
   }
 
-  setUniform(name: string, { type, value }: UniformInfo): this {
+  setUniform(name: string, { type, value }: UniformInfo): boolean {
     const gl = this.gl
     let uniform
     if ((uniform = this.#uniforms.get(name))) {
@@ -66,7 +65,7 @@ export default class Drawable extends SceneNode {
       const location = gl.getUniformLocation(this.program, name)
       if (!location) {
         console.error(`uniform with name ${name} was not found in the program`)
-        return this
+        return false
       }
       uniform = { type, location, value }
       this.#uniforms.set(name, uniform)
@@ -75,18 +74,19 @@ export default class Drawable extends SceneNode {
       gl.useProgram(this.program)
       uploadUniformVariable(gl, uniform.type, uniform.location, value)
     }
-    return this
+    return true
   }
 
-  updateUniform(name: string, value: UniformValue): this {
+  updateUniform(name: string, value: UniformValue): boolean {
     let uniform
     if ((uniform = this.getUniform(name))) {
       uniform.value = value
       const gl = this.gl
       gl.useProgram(this.program)
       uploadUniformVariable(gl, uniform.type, uniform.location, value)
+      return true
     }
-    return this
+    return false
   }
 
   getUniform(name: string): Uniform | null {
