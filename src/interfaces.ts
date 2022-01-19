@@ -1,10 +1,20 @@
 import { vec3 } from 'gl-matrix'
 import { SceneNode } from '.'
 
-export interface ProjectedMouse {
-  rayStart: vec3
-  rayEnd: vec3
-  rayDirection: vec3
+export type UniformValue = GLfloat | GLint | Float32Array | Int32Array
+
+export interface UniformInfo {
+  type: GLint
+  value?: UniformValue
+}
+
+export interface Uniform extends UniformInfo {
+  location: WebGLUniformLocation | null
+}
+
+export interface Attribute {
+  location: GLint | -1
+  value: Float32Array
 }
 
 export type ShaderDefineValue = boolean | number
@@ -22,6 +32,12 @@ export interface UBOInfo {
   uniforms: {
     [key: string]: UBOVariableInfo
   }
+}
+
+export interface ProjectedMouse {
+  rayStart: vec3
+  rayEnd: vec3
+  rayDirection: vec3
 }
 
 export interface BoundingBox {

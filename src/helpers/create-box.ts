@@ -239,5 +239,4 @@ function buildPlane(
       ii++
     }
   }
-  console.log({ faceIdx, interleavedArray })
 }

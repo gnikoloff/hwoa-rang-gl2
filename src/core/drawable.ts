@@ -1,20 +1,29 @@
 import { mat4 } from 'gl-matrix'
-import { BoundingBox, createProgram, SceneNode, ShaderDefineValue } from '..'
+import {
+  // Attribute,
+  BoundingBox,
+  createProgram,
+  SceneNode,
+  ShaderDefineValue,
+  Uniform,
+  UniformInfo,
+  UniformValue,
+  uploadUniformVariable,
+} from '..'
 
 export default class Drawable extends SceneNode {
   protected gl: WebGL2RenderingContext
   protected vao: WebGLVertexArrayObject
   protected vertexCount!: number
   protected uploadWorldMatrixToGPU = false
-  protected uniformLocations: {
-    [name: string]: WebGLUniformLocation | null
-  } = {}
-  protected attributeLocations: {
-    [name: string]: GLint | -1
-  } = {}
+
+  #uniforms: Map<string, Uniform> = new Map()
+  // protected attributes: Map<string, Attribute> = new Map()
 
   boundingBox!: BoundingBox
   program!: WebGLProgram
+
+  static WORLD_MATRIX_UNIFORM_NAME = 'u_worldMatrix'
 
   constructor(
     gl: WebGL2RenderingContext,
@@ -33,14 +42,60 @@ export default class Drawable extends SceneNode {
       fragmentShaderSource,
       shaderDefines,
     )
-    const worldMatrixLoc = gl.getUniformLocation(this.program, 'u_worldMatrix')!
+    const worldMatrixLoc = gl.getUniformLocation(
+      this.program,
+      Drawable.WORLD_MATRIX_UNIFORM_NAME,
+    )!
 
     if (!worldMatrixLoc) {
       throw new Error(
-        'Each Drawable is expected to have a mat4 u_worldMatrix implemented in shader',
+        `Each Drawable is expected to have a mat4 ${Drawable.WORLD_MATRIX_UNIFORM_NAME} implemented in shader`,
       )
     }
-    this.uniformLocations.worldMatrix = worldMatrixLoc
+    this.setUniform(Drawable.WORLD_MATRIX_UNIFORM_NAME, {
+      type: gl.FLOAT_MAT4,
+    })
+  }
+
+  setUniform(name: string, { type, value }: UniformInfo): this {
+    const gl = this.gl
+    let uniform
+    if ((uniform = this.#uniforms.get(name))) {
+      uniform.value = value
+    } else {
+      const location = gl.getUniformLocation(this.program, name)
+      if (!location) {
+        console.error(`uniform with name ${name} was not found in the program`)
+        return this
+      }
+      uniform = { type, location, value }
+      this.#uniforms.set(name, uniform)
+    }
+    if (value != null) {
+      gl.useProgram(this.program)
+      uploadUniformVariable(gl, uniform.type, uniform.location, value)
+    }
+    return this
+  }
+
+  updateUniform(name: string, value: UniformValue): this {
+    let uniform
+    if ((uniform = this.getUniform(name))) {
+      uniform.value = value
+      const gl = this.gl
+      gl.useProgram(this.program)
+      uploadUniformVariable(gl, uniform.type, uniform.location, value)
+    }
+    return this
+  }
+
+  getUniform(name: string): Uniform | null {
+    let uniform
+    if ((uniform = this.#uniforms.get(name))) {
+      return uniform
+    }
+    console.error(`can't locate uniform with that name`)
+    return null
   }
 
   updateWorldMatrix(parentWorldMatrix?: mat4 | null): this {
@@ -55,20 +110,19 @@ export default class Drawable extends SceneNode {
     }
     this.uploadWorldMatrixToGPU = false
 
-    this.gl.useProgram(this.program)
-    this.gl.uniformMatrix4fv(
-      this.uniformLocations.worldMatrix,
-      false,
-      this.worldMatrix,
+    this.updateUniform(
+      Drawable.WORLD_MATRIX_UNIFORM_NAME,
+      this.worldMatrix as Float32Array,
     )
+
     return this
   }
 
   destroy(): void {
+    this.#uniforms.clear()
+    // this.attributes.clear()
     const gl = this.gl
     gl.deleteVertexArray(this.vao)
     gl.deleteProgram(this.program)
-    this.uniformLocations = {}
-    this.attributeLocations = {}
   }
 }

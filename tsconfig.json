@@ -12,7 +12,8 @@
     "noUnusedLocals": true,
     "noUnusedParameters": true,
     "noImplicitReturns": true,
-    "declaration": true
+    "declaration": true,
+    "typeRoots": ["./npm_modules/@types/", "./node_modules/@types/webgl-ext"]
   },
   "include": ["./src"]
 }
