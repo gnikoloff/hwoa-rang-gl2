@@ -7,12 +7,12 @@ const _gl = _c.getContext('webgl2')!
 let textureSize: vec2 = [_gl.MAX_TEXTURE_SIZE, _gl.MAX_TEXTURE_SIZE]
 let textureFormat = _gl.RGB
 
-let instance: MegaTexture
+let instance: TextureAtlas
 let gl: WebGL2RenderingContext
 
 let debugMode = false
 
-export default class MegaTexture {
+export default class TextureAtlas {
   #atlases: Atlas[] = []
   #textures: WebGLTexture[] = []
 
@@ -34,14 +34,14 @@ export default class MegaTexture {
     gl = glContext
   }
 
-  static getInstance(): MegaTexture {
+  static getInstance(): TextureAtlas {
     if (!gl) {
       throw new Error(
-        'You must provide a WebGL2RenderingContext first via setting the MegaTexture.gl property!',
+        'You must provide a WebGL2RenderingContext first via setting the TextureAtlas.gl property!',
       )
     }
     if (!instance) {
-      instance = new MegaTexture()
+      instance = new TextureAtlas()
     }
     return instance
   }
@@ -149,7 +149,7 @@ export default class MegaTexture {
     const drawableToPack =
       downscaleFactor === 1
         ? drawable
-        : MegaTexture.scaleDownDrawableByFactor(drawable, downscaleFactor)
+        : TextureAtlas.scaleDownDrawableByFactor(drawable, downscaleFactor)
 
     const success = atlas.pack(id, drawableToPack)
     if (!success) {
