@@ -136,6 +136,8 @@ const createBox = (params: Box = {}): BoxGeometry => {
     -1,
     (i += (wSegs + 1) * (dSegs + 1)),
     (ii += wSegs * dSegs),
+    vertexStride,
+    uvOffsetEachFace,
   )
   // FRONT
   buildPlane(
