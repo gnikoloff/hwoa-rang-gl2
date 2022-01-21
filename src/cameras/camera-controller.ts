@@ -2,7 +2,7 @@
 
 import { vec3 } from 'gl-matrix'
 import PerspectiveCamera from './perspective-camera'
-import { clamp } from '../helpers/math'
+import { clamp } from '../lib/hwoa-rang-math'
 
 class DampedAction {
   private value = 0.0
