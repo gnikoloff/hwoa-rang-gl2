@@ -1,7 +1,6 @@
 import { mat4 } from 'gl-matrix'
+import { BoundingBox } from '../lib/hwoa-rang-math'
 import {
-  // Attribute,
-  BoundingBox,
   createProgram,
   SceneNode,
   ShaderDefineValue,

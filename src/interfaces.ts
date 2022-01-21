@@ -1,4 +1,3 @@
-import { vec3 } from 'gl-matrix'
 import { SceneNode } from '.'
 
 export type UniformValue = GLfloat | GLint | Float32Array | Int32Array
