@@ -18,7 +18,7 @@
 
 import { vec3 } from 'gl-matrix'
 import { RoundBox, BoxGeometry } from '../interfaces'
-import { normalizeNumber, triangleWave } from '../helpers/math'
+import { normalizeNumber, triangleWave } from '../lib/hwoa-rang-math'
 
 // Handle Simple 90 Degree Rotations without the use of Quat,Trig,Matrices
 export class VRot90 {
