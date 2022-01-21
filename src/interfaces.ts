@@ -42,17 +42,6 @@ export interface UBOInfo {
   }
 }
 
-export interface ProjectedMouse {
-  rayStart: vec3
-  rayEnd: vec3
-  rayDirection: vec3
-}
-
-export interface BoundingBox {
-  min: vec3
-  max: vec3
-}
-
 export interface Geometry {
   vertexCount: number
   vertexStride: number

@@ -1,6 +1,5 @@
 import { mat4, vec2, vec3, vec4 } from 'gl-matrix'
-import { BoundingBox, ProjectedMouse } from '../interfaces'
-import PerspectiveCamera from '../cameras/perspective-camera'
+import { BoundingBox, ProjectedMouse, PerspectiveCamera } from './interfaces'
 
 /**
  * Clamp number to a given range
@@ -54,7 +53,6 @@ export const normalizeNumber = (
 
 /**
  * Used when creating round-cube geometry edge vertices
- * @private
  * @param {number} t
  * @returns {number}
  */

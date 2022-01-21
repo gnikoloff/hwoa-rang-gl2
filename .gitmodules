@@ -1,0 +1,3 @@
+[submodule "hwoa-rang-math"]
+	path = hwoa-rang-math
+	url = https://github.com/gnikoloff/hwoa-rang-math.git

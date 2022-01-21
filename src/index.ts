@@ -19,7 +19,6 @@ import Drawable from './core/drawable'
 
 import TextureAtlas from './extra/texture-atlas'
 
-export * from './helpers/math'
 export * from './interfaces'
 
 export {
