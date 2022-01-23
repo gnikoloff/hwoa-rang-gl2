@@ -61,7 +61,9 @@ export interface BoxGeometry extends Geometry {
 
 export type traverseCallback = (node: SceneNode, depthLevel: number) => void
 
-export type findNodeInTreeCallback = (node: SceneNode) => SceneNode | null
+export type findNodeInTreeCallback = (
+  node: SceneNode,
+) => SceneNode | boolean | null
 
 export interface Plane {
   /**

@@ -28,7 +28,7 @@ export default class Drawable extends SceneNode {
     gl: WebGL2RenderingContext,
     vertexShaderSource: string,
     fragmentShaderSource: string,
-    shaderDefines: { [name: string]: ShaderDefineValue },
+    shaderDefines: { [name: string]: ShaderDefineValue } = {},
     name?: string,
   ) {
     super(name)
