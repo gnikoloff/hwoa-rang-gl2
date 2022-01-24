@@ -6,7 +6,7 @@ export default class SceneNode extends Transform {
   parentNode: SceneNode | null = null
 
   protected _children: SceneNode[] = []
-  protected _visible = false
+  protected _visible = true
 
   worldMatrix = mat4.create()
   normalMatrix = mat4.create()

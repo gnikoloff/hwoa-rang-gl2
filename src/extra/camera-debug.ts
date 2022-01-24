@@ -1,4 +1,3 @@
-import { mat4 } from 'gl-matrix'
 import { Drawable, PerspectiveCamera } from '..'
 
 const vertexShader = `#version 300 es

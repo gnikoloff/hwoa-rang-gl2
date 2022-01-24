@@ -8,7 +8,8 @@
   "scripts": {
     "start:dev": "tsup ./src/index.ts --watch --dts --clean",
     "start:build": "tsup ./src/index.ts --minify --dts --clean",
-    "lint": "eslint ./src"
+    "lint": "eslint ./src",
+    "build:docs": "npx typedoc"
   },
   "lint-staged": {
     "**/*": [
@@ -25,6 +26,7 @@
     "husky": "^7.0.4",
     "prettier": "^2.5.1",
     "tsup": "^5.11.11",
+    "typedoc": "^0.22.11",
     "typescript": "^4.5.4"
   },
   "dependencies": {
