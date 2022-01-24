@@ -4,13 +4,23 @@ import { findNodeInTreeCallback, Transform, traverseCallback } from '..'
 
 export default class SceneNode extends Transform {
   parentNode: SceneNode | null = null
+
   protected _children: SceneNode[] = []
+  protected _visible = false
 
   worldMatrix = mat4.create()
   normalMatrix = mat4.create()
 
   uid = uid(9)
   name?: string
+
+  get visible() {
+    return this._visible
+  }
+
+  set visible(v: boolean) {
+    this._visible = v
+  }
 
   get children(): SceneNode[] {
     return this._children
@@ -142,6 +152,9 @@ export default class SceneNode extends Transform {
   }
 
   render(): void {
+    if (!this._visible) {
+      return
+    }
     for (let i = 0; i < this._children.length; i++) {
       this._children[i].render()
     }
