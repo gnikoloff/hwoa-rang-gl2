@@ -14,6 +14,8 @@ A collection of helper WebGL2 methods to speed up common tasks. Additionally, co
 
 ## Docs
 
+- [docs](https://gnikoloff.github.io/hwoa-rang-gl2/)
+
 ## References
 
 - [WebGL2 Samples](http://webglsamples.org/WebGL2Samples/)
