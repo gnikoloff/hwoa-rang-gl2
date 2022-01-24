@@ -31,27 +31,35 @@ export default class CameraDebug extends Drawable {
     const step = (Math.PI * 2) / numSides
     const frameVertices = new Float32Array(
       // frustum floats count
-      numSides * 2 * 3,
+      numSides * 2 * 3 +
+        // center line
+        2 * 3,
     )
-    const radius = 1
-    console.log(Math.PI * 2 * camera.fieldOfView)
+    const radius = 10
+
     for (let i = 0; i <= numSides; i++) {
       const offset = Math.PI * 0.25
 
-      frameVertices[i * 6 + 0] = Math.cos(i * step + offset) * radius
-      frameVertices[i * 6 + 1] = Math.sin(i * step + offset) * radius
+      frameVertices[i * 6 + 0] = 0
+      frameVertices[i * 6 + 1] = 0
       frameVertices[i * 6 + 2] = 0
 
       frameVertices[i * 6 + 3] = Math.cos(i * step + offset) * radius
       frameVertices[i * 6 + 4] = Math.sin(i * step + offset) * radius
-      frameVertices[i * 6 + 5] = 2
+      frameVertices[i * 6 + 5] = -10
     }
+    frameVertices[numSides * 6 + 0] = 0
+    frameVertices[numSides * 6 + 1] = 0
+    frameVertices[numSides * 6 + 2] = 0
 
-    this.vertexCount = numSides * 2
+    frameVertices[numSides * 6 + 3] = 0
+    frameVertices[numSides * 6 + 4] = 0
+    frameVertices[numSides * 6 + 5] = -100
+
+    this.vertexCount = numSides * 2 + 2
     const interleavedBuffer = gl.createBuffer()
 
     const a_posLoc = gl.getAttribLocation(this.program, 'a_position')
-    const a_colorLoc = gl.getAttribLocation(this.program, 'a_color')
 
     this.setUniform('u_worldMatrix', {
       type: gl.FLOAT_MAT4,
@@ -76,16 +84,19 @@ export default class CameraDebug extends Drawable {
     return this
   }
   render(): void {
-    const modelMatrix = mat4.create()
-    const invertProjectionMatrix = mat4.create()
-    mat4.invert(invertProjectionMatrix, this.#camera.projectionMatrix)
-    mat4.mul(
-      modelMatrix,
-      this.#camera.viewMatrixInverse,
-      invertProjectionMatrix,
-    )
+    // const modelMatrix = mat4.create()
+    // const invertProjectionMatrix = mat4.create()
+    // mat4.invert(invertProjectionMatrix, this.#camera.projectionMatrix)
+    // mat4.mul(
+    //   modelMatrix,
+    //   this.#camera.viewMatrixInverse,
+    //   invertProjectionMatrix,
+    // )
 
-    this.updateUniform('u_worldMatrix', modelMatrix as Float32Array)
+    this.updateUniform(
+      'u_worldMatrix',
+      this.#camera.viewMatrixInverse as Float32Array,
+    )
 
     const gl = this.gl
     gl.useProgram(this.program)
