@@ -7,14 +7,14 @@ A collection of helper WebGL2 methods to speed up common tasks. Additionally, co
 - perspective and orthographic camera
 - a scene graph with nodes / drawables
 
+## Docs
+
+- [Docs](https://gnikoloff.github.io/hwoa-rang-gl2/)
+
 ## Dependencies
 
 - [hwoa-rang-math](https://github.com/gnikoloff/hwoa-rang-math)
 - [gl-matrix](https://glmatrix.net/)
-
-## Docs
-
-- [docs](https://gnikoloff.github.io/hwoa-rang-gl2/)
 
 ## References
 
