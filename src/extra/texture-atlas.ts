@@ -1,10 +1,9 @@
-import { vec2 } from 'gl-matrix'
 import { Atlas } from 'texture-atlas'
 
 const _c = document.createElement('canvas')
 const _gl = _c.getContext('webgl2')!
 
-let textureSize: vec2 = [_gl.MAX_TEXTURE_SIZE, _gl.MAX_TEXTURE_SIZE]
+let textureSize: number = _gl.MAX_TEXTURE_SIZE
 let textureFormat = _gl.RGB
 
 let instance: TextureAtlas
@@ -22,7 +21,11 @@ export default class TextureAtlas {
     debugMode = newDebugMode
   }
 
-  static set textureSize(newTexSize: vec2) {
+  static get textureSize() {
+    return textureSize
+  }
+
+  static set textureSize(newTexSize) {
     textureSize = newTexSize
   }
 
@@ -110,8 +113,8 @@ export default class TextureAtlas {
     const allocateNewAtlas = () => {
       const canvas = document.createElement('canvas')
       this.#debugDomContainer.appendChild(canvas)
-      canvas.width = textureSize[0]
-      canvas.height = textureSize[1]
+      canvas.width = textureSize
+      canvas.height = textureSize
       const texture = gl.createTexture()!
 
       // upload empty texture now, fill subregions with texSubImage2D later
@@ -125,8 +128,8 @@ export default class TextureAtlas {
         gl.TEXTURE_2D,
         0,
         textureFormat,
-        textureSize[0],
-        textureSize[1],
+        textureSize,
+        textureSize,
         0,
         textureFormat,
         gl.UNSIGNED_BYTE,
@@ -159,8 +162,8 @@ export default class TextureAtlas {
 
     const uv = atlas.uv()[id]
     for (let i = 0; i < uv.length; i++) {
-      uv[i][0] *= textureSize[0]
-      uv[i][1] *= textureSize[1]
+      uv[i][0] *= textureSize
+      uv[i][1] *= textureSize
     }
 
     // upload drawable graphic to correct texture and correct subregion on GPU
