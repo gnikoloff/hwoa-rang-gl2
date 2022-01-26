@@ -16,7 +16,7 @@ export interface Attribute {
   value: Float32Array
 }
 
-export type ShaderDefineValue = boolean | number
+export type ShaderDefineValue = boolean | number | string
 
 export interface UBOVariableInfo {
   index: GLuint
