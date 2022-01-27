@@ -16,6 +16,14 @@ const createShader = (
   shaderSource: string,
   defines: { [key: string]: ShaderDefineValue } = {},
 ): WebGLShader => {
+  if (
+    Object.keys(defines).length &&
+    !shaderSource.includes(SHADER_DEFINES_HOOK)
+  ) {
+    throw new Error(
+      `in order to include defines, you must provide "${SHADER_DEFINES_HOOK}" in your shader code`,
+    )
+  }
   let shaderDefinesString = ''
   for (const [key, value] of Object.entries(defines)) {
     if (typeof value === 'boolean' && !value) {
