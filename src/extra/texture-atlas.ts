@@ -89,18 +89,29 @@ export default class TextureAtlas {
   }
 
   constructor() {
-    this.#debugDomContainer.setAttribute(
-      'style',
-      `
-      position: fixed;
-      bottom: 1rem;
-      right: 1rem;
-      transform-origin: 100% 100%;
-      transform: scale(0.15);
-      border: 20px solid red;
-    `,
-    )
     if (debugMode) {
+      const maxWidthPX = 400
+      const style = document.createElement('style')
+      const elID = 'hwoa-rang-texture-atlas-debug'
+      style.setAttribute('type', 'text/css')
+      const styles = `
+        #${elID} {
+          position: fixed;
+          bottom: 1rem;
+          right: 1rem;
+          transform-origin: 100% 100%;
+          width: ${maxWidthPX}px;
+          max-height: 100vh;
+          overflow: scroll;
+        }
+        #${elID} canvas {
+          max-width: 100%;
+        }
+      `
+      style.appendChild(document.createTextNode(styles))
+      document.getElementsByTagName('head')[0].appendChild(style)
+      this.#debugDomContainer = document.createElement('div')
+      this.#debugDomContainer.setAttribute('id', elID)
       document.body.appendChild(this.#debugDomContainer)
     }
   }
