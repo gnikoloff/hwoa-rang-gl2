@@ -146,6 +146,8 @@ export default class TextureAtlas {
         gl.UNSIGNED_BYTE,
         null,
       )
+      // https://limnu.com/webgl-blending-youre-probably-wrong/
+      // gl.pixelStorei(gl.UNPACK_PREMULTIPLY_ALPHA_WEBGL, true)
       gl.generateMipmap(gl.TEXTURE_2D)
       gl.bindTexture(gl.TEXTURE_2D, null)
 
