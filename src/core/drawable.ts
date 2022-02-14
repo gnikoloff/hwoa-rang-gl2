@@ -14,7 +14,6 @@ export default class Drawable extends SceneNode {
   protected gl: WebGL2RenderingContext
   protected vao: WebGLVertexArrayObject
   protected vertexCount!: number
-  protected uploadWorldMatrixToGPU = false
 
   #uniforms: Map<string, Uniform> = new Map()
   // protected attributes: Map<string, Attribute> = new Map()
@@ -99,21 +98,10 @@ export default class Drawable extends SceneNode {
 
   updateWorldMatrix(parentWorldMatrix?: mat4 | null): this {
     super.updateWorldMatrix(parentWorldMatrix)
-    this.uploadWorldMatrixToGPU = true
-    return this
-  }
-
-  uploadWorldMatrix(): this {
-    if (!this.uploadWorldMatrixToGPU) {
-      return this
-    }
-    this.uploadWorldMatrixToGPU = false
-
     this.updateUniform(
       Drawable.WORLD_MATRIX_UNIFORM_NAME,
       this.worldMatrix as Float32Array,
     )
-
     return this
   }
 

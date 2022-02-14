@@ -5,6 +5,7 @@ import createAndBindUBOToBase from './core/create-bind-ubo-to-base'
 import uploadUniformVariable from './core/upload-uniform-variable'
 import createFramebuffer from './core/create-framebuffer'
 
+import createSphere from './helpers/create-sphere'
 import createPlane from './helpers/create-plane'
 import createBox from './helpers/create-box'
 import createRoundedBox from './helpers/create-round-box'
@@ -29,6 +30,7 @@ export {
   createAndBindUBOToBase,
   uploadUniformVariable,
   createFramebuffer,
+  createSphere,
   createPlane,
   createBox,
   createRoundedBox,
