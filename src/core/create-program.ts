@@ -42,8 +42,11 @@ const createProgram = (
   if (gl.getProgramParameter(program, gl.LINK_STATUS)) {
     return program
   }
+  const err = new Error(
+    `Error linking program: ${gl.getProgramInfoLog(program)}`,
+  )
   gl.deleteProgram(program)
-  throw new Error(`Error linking program: ${gl.getProgramInfoLog(program)}`)
+  throw err
 }
 
 export default createProgram
