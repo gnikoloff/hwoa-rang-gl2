@@ -28,12 +28,18 @@ const createUniformBlockInfo = (
     uniformIndices,
     gl.UNIFORM_OFFSET,
   )
+  const uniformSizes = gl.getActiveUniforms(
+    program,
+    uniformIndices,
+    gl.UNIFORM_SIZE,
+  )
   const uniforms: { [key: string]: UBOVariableInfo } = {}
   for (let i = 0; i < uniformNames.length; i++) {
     const name = uniformNames[i]
     const uniformInfo: UBOVariableInfo = {
       index: uniformIndices[i],
       offset: uniformOffsets[i],
+      size: uniformSizes[i],
     }
     uniforms[name] = uniformInfo
   }

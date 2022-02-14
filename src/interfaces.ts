@@ -19,8 +19,9 @@ export interface Attribute {
 export type ShaderDefineValue = boolean | number | string
 
 export interface UBOVariableInfo {
-  index: GLuint
-  offset: GLuint
+  index: [] | GLuint
+  offset: [] | GLuint
+  size: [] | GLuint
 }
 
 export interface FramebufferInfo {
