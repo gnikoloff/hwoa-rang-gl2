@@ -13,6 +13,7 @@ const createFramebuffer = (
   width: number,
   height: number,
   useDepthTexture = false,
+  colorBufferFormat = gl.RGB,
   debugName: string,
 ): FramebufferInfo => {
   const framebuffer = gl.createFramebuffer()!
@@ -33,11 +34,11 @@ const createFramebuffer = (
   gl.texImage2D(
     gl.TEXTURE_2D,
     0,
-    gl.RGB,
+    colorBufferFormat,
     width,
     height,
     0,
-    gl.RGB,
+    colorBufferFormat,
     gl.UNSIGNED_BYTE,
     null,
   )
