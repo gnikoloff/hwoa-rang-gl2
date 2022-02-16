@@ -1,9 +1,8 @@
 import { mat4, vec3 } from 'gl-matrix'
 
 export default class Camera {
-  static UP_VECTOR = vec3.fromValues(0, 1, 0)
-
-  position = vec3.fromValues(1, 2, 3)
+  upVector = vec3.fromValues(0, 1, 0)
+  position = vec3.fromValues(0, 0, 0)
   lookAt = vec3.fromValues(0, 0, 0)
 
   projectionMatrix = mat4.create()
@@ -13,7 +12,7 @@ export default class Camera {
   projectionViewMatrix = mat4.create()
 
   updateViewMatrix(): this {
-    mat4.lookAt(this.viewMatrix, this.position, this.lookAt, Camera.UP_VECTOR)
+    mat4.lookAt(this.viewMatrix, this.position, this.lookAt, this.upVector)
     mat4.invert(this.viewMatrixInverse, this.viewMatrix)
     return this
   }
