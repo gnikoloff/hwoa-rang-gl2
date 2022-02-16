@@ -14,6 +14,7 @@ const createBox = (params: Box = {}): BoxGeometry => {
     heightSegments = 1,
     depthSegments = 1,
     uvOffsetEachFace = false,
+    flipUVy = false,
   } = params
 
   const wSegs = widthSegments
@@ -58,6 +59,7 @@ const createBox = (params: Box = {}): BoxGeometry => {
     ii,
     vertexStride,
     uvOffsetEachFace,
+    flipUVy,
   )
   // LEFT
   buildPlane(
@@ -78,6 +80,7 @@ const createBox = (params: Box = {}): BoxGeometry => {
     (ii += dSegs * hSegs),
     vertexStride,
     uvOffsetEachFace,
+    flipUVy,
   )
   // TOP
   buildPlane(
@@ -98,6 +101,7 @@ const createBox = (params: Box = {}): BoxGeometry => {
     (ii += dSegs * hSegs),
     vertexStride,
     uvOffsetEachFace,
+    flipUVy,
   )
   // BOTTOM
   buildPlane(
@@ -118,6 +122,7 @@ const createBox = (params: Box = {}): BoxGeometry => {
     (ii += wSegs * dSegs),
     vertexStride,
     uvOffsetEachFace,
+    flipUVy,
   )
   // BACK
   buildPlane(
@@ -138,6 +143,7 @@ const createBox = (params: Box = {}): BoxGeometry => {
     (ii += wSegs * dSegs),
     vertexStride,
     uvOffsetEachFace,
+    flipUVy,
   )
   // FRONT
   buildPlane(
@@ -158,6 +164,7 @@ const createBox = (params: Box = {}): BoxGeometry => {
     (ii += wSegs * hSegs),
     vertexStride,
     uvOffsetEachFace,
+    flipUVy,
   )
 
   return {
@@ -191,6 +198,7 @@ function buildPlane(
   ii = 0,
   vertexStride = 8,
   uvOffsetEachFace = false,
+  flipUVy = false,
 ) {
   const io = i
   const segW = width / wSegs
@@ -218,11 +226,14 @@ function buildPlane(
         ? stepOffset + (ix / wSegs) * step
         : ix / wSegs
       const uvY = uvOffsetEachFace
-        ? stepOffset + (iy / hSegs) * step
+        ? flipUVy
+          ? stepOffset + step - stepOffset + (iy / hSegs) * step
+          : stepOffset + (iy / hSegs) * step
+        : flipUVy
+        ? 1 - iy / hSegs
         : iy / hSegs
       interleavedArray[i * vertexStride + 6 + 0] = uvX
       interleavedArray[i * vertexStride + 6 + 1] = uvY
-
       if (iy === hSegs || ix === wSegs) {
         continue
       }
