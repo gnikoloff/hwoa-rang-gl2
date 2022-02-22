@@ -19,6 +19,7 @@ import SceneNode from './core/scene-node'
 import Drawable from './core/drawable'
 
 import TextureAtlas from './extra/texture-atlas'
+import TextureLoader from './extra/texture-loader'
 import CameraDebug from './extra/camera-debug'
 
 export * from './interfaces'
@@ -41,5 +42,6 @@ export {
   SceneNode,
   Drawable,
   TextureAtlas,
+  TextureLoader,
   CameraDebug,
 }
