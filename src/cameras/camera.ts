@@ -17,7 +17,14 @@ export default class Camera {
     return this
   }
 
+  updateProjectionMatrix(): this {
+    // no-op
+    return this
+  }
+
   updateProjectionViewMatrix(): this {
+    this.updateViewMatrix()
+    this.updateProjectionMatrix()
     mat4.mul(this.projectionViewMatrix, this.projectionMatrix, this.viewMatrix)
     return this
   }

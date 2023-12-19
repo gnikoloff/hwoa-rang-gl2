@@ -49,6 +49,21 @@ export interface Geometry {
   indicesArray: Uint16Array | Uint32Array
 }
 
+export interface IndexlessGeometry {
+  vertexCount: number
+  vertexStride: number
+  interleavedArray: Float32Array
+}
+
+export interface CircleLineGeometry extends IndexlessGeometry {
+  radius: number
+}
+
+export interface PlaneLineGeometry extends IndexlessGeometry {
+  width: number
+  height: number
+}
+
 export interface PlaneGeometry extends Geometry {
   width: number
   height: number
@@ -61,6 +76,10 @@ export interface BoxGeometry extends Geometry {
 }
 
 export interface SphereGeometry extends Geometry {
+  radius: number
+}
+
+export interface CircleGeometry extends Geometry {
   radius: number
 }
 
@@ -145,6 +164,10 @@ export interface Box {
    * @defaultValue false
    */
   uvOffsetEachFace?: boolean
+  /**
+   * @default false
+   */
+  flipUVy?: boolean
 }
 
 export interface Sphere {
@@ -176,4 +199,11 @@ export interface Sphere {
    * @defaultValue Math.PI
    */
   thetaLength?: number
+}
+
+export interface Circle {
+  radius?: number
+  segments?: number
+  thetaStart?: number
+  thetaEnd?: number
 }
