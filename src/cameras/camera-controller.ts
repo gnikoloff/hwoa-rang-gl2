@@ -1,8 +1,8 @@
 // @ts-nocheck
 
 import { vec3 } from 'gl-matrix'
-import PerspectiveCamera from './perspective-camera'
 import { clamp } from '../lib/hwoa-rang-math'
+import PerspectiveCamera from './perspective-camera'
 
 class DampedAction {
   private value = 0.0
@@ -373,12 +373,16 @@ export default class CameraController {
     // this.update();
   }
   _mouseWheelHandler(event: WheelEvent): void {
+    event.preventDefault()
     const force = this.mouseWheelForce
-    if (event.deltaY > 0) {
-      this.targetRadiusDampedAction.addForce(force)
-    } else {
-      this.targetRadiusDampedAction.addForce(-force)
-    }
+    const delta = event.deltaY > 0 ? force : -force
+
+    this.targetRadiusDampedAction.value = delta
+    // if (event.deltaY > 0) {
+    //   this.targetRadiusDampedAction.addForce(force)
+    // } else {
+    //   this.targetRadiusDampedAction.addForce(-force)
+    // }
   }
 
   _touchStartHandler(event: TouchEvent): void {
@@ -451,7 +455,7 @@ export default class CameraController {
         this._zoomDistanceEnd = Math.sqrt(dX * dX + dY * dY)
 
         dDis = this._zoomDistanceEnd - this._zoomDistance
-        dDis *= 1.5
+        dDis *= 0.05
 
         // eslint-disable-next-line no-case-declarations
         let targetRadius = this._spherical.radius - dDis
@@ -559,10 +563,12 @@ export default class CameraController {
   }
   _updateRotateHandler(): void {
     this.targetThetaDampedAction.addForce(
-      -this._roatteDelta.x / this.domElement.clientWidth,
+      (-this._roatteDelta.x / this.domElement.clientWidth) *
+        this.mouseWheelForce,
     )
     this.targetPhiDampedAction.addForce(
-      -this._roatteDelta.y / this.domElement.clientHeight,
+      (-this._roatteDelta.y / this.domElement.clientHeight) *
+        this.mouseWheelForce,
     )
   }
 }

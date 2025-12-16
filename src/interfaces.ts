@@ -145,6 +145,10 @@ export interface Box {
    * @defaultValue false
    */
   uvOffsetEachFace?: boolean
+  /**
+   * @default false
+   */
+  flipUVy?: boolean
 }
 
 export interface Sphere {

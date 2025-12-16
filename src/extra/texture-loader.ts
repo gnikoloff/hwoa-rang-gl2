@@ -1,4 +1,10 @@
-import { SupportedCompressedTextures } from '..'
+export interface SupportedCompressedTextures {
+  astc: WEBGL_compressed_texture_astc | null
+  etc1: WEBGL_compressed_texture_etc1 | null
+  etc2: WEBGL_compressed_texture_etc | null
+  s3tc: WEBGL_compressed_texture_s3tc | null
+  pvrtc: WEBGL_compressed_texture_pvrtc | null
+}
 
 export default class TextureLoader {
   static getSupportedFormats(
@@ -63,7 +69,7 @@ class KhronosTextureContainer {
     // Test that it is a ktx formatted file, based on the first 12 bytes, character representation is:
     // '´', 'K', 'T', 'X', ' ', '1', '1', 'ª', '\r', '\n', '\x1A', '\n'
     // 0xAB, 0x4B, 0x54, 0x58, 0x20, 0x31, 0x31, 0xBB, 0x0D, 0x0A, 0x1A, 0x0A
-    var identifier = new Uint8Array(this.arrayBuffer, 0, 12)
+    const identifier = new Uint8Array(this.arrayBuffer, 0, 12)
     if (
       identifier[0] !== 0xab ||
       identifier[1] !== 0x4b ||
@@ -83,10 +89,10 @@ class KhronosTextureContainer {
     }
 
     // load the reset of the header in native 32 bit uint
-    var dataSize = Uint32Array.BYTES_PER_ELEMENT
-    var headerDataView = new DataView(this.arrayBuffer, 12, 13 * dataSize)
-    var endianness = headerDataView.getUint32(0, true)
-    var littleEndian = endianness === 0x04030201
+    const dataSize = Uint32Array.BYTES_PER_ELEMENT
+    const headerDataView = new DataView(this.arrayBuffer, 12, 13 * dataSize)
+    const endianness = headerDataView.getUint32(0, true)
+    const littleEndian = endianness === 0x04030201
 
     this.glType = headerDataView.getUint32(1 * dataSize, littleEndian) // must be 0 for compressed textures
     this.glTypeSize = headerDataView.getUint32(2 * dataSize, littleEndian) // must be 1 for compressed textures
@@ -143,21 +149,25 @@ class KhronosTextureContainer {
     this.loadType = KhronosTextureContainer.COMPRESSED_2D
   }
   mipmaps(loadMipmaps: boolean) {
-    var mipmaps = []
+    const mipmaps = []
 
     // initialize width & height for level 1
-    var dataOffset =
+    let dataOffset =
       KhronosTextureContainer.HEADER_LEN + this.bytesOfKeyValueData
-    var width = this.pixelWidth
-    var height = this.pixelHeight
-    var mipmapCount = loadMipmaps ? this.numberOfMipmapLevels : 1
+    let width = this.pixelWidth
+    let height = this.pixelHeight
+    const mipmapCount = loadMipmaps ? this.numberOfMipmapLevels : 1
 
-    for (var level = 0; level < mipmapCount; level++) {
-      var imageSize = new Int32Array(this.arrayBuffer, dataOffset, 1)[0] // size per face, since not supporting array cubemaps
+    for (let level = 0; level < mipmapCount; level++) {
+      const imageSize = new Int32Array(this.arrayBuffer, dataOffset, 1)[0] // size per face, since not supporting array cubemaps
       dataOffset += 4 // size of the image + 4 for the imageSize field
 
-      for (var face = 0; face < this.numberOfFaces; face++) {
-        var byteArray = new Uint8Array(this.arrayBuffer, dataOffset, imageSize)
+      for (let face = 0; face < this.numberOfFaces; face++) {
+        const byteArray = new Uint8Array(
+          this.arrayBuffer,
+          dataOffset,
+          imageSize,
+        )
 
         mipmaps.push({ data: byteArray, width: width, height: height })
 
