@@ -1,7 +1,8 @@
 import { mat4 } from 'gl-matrix'
 import { uid } from 'uid'
-import { findNodeInTreeCallback, Transform, traverseCallback } from '..'
 
+import { findNodeInTreeCallback, traverseCallback } from '../interfaces'
+import Transform from './transform'
 export default class SceneNode extends Transform {
   parentNode: SceneNode | null = null
 

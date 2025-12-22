@@ -5,11 +5,20 @@ export default class Camera {
   position = vec3.fromValues(0, 0, 0)
   lookAt = vec3.fromValues(0, 0, 0)
 
-  projectionMatrix = mat4.create()
+  projectionMatrix: mat4 = mat4.create()
   viewMatrix = mat4.create()
   viewMatrixInverse = mat4.create()
 
   projectionViewMatrix = mat4.create()
+
+  private _positionF32 = new Float32Array(3)
+
+  getTypedPosition(): Float32Array {
+    this._positionF32[0] = this.position[0]
+    this._positionF32[1] = this.position[1]
+    this._positionF32[2] = this.position[2]
+    return this._positionF32
+  }
 
   updateViewMatrix(): this {
     mat4.lookAt(this.viewMatrix, this.position, this.lookAt, this.upVector)

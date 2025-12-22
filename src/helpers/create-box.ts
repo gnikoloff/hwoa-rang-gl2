@@ -1,4 +1,4 @@
-import { Box, BoxGeometry } from '..'
+import { Box, BoxGeometry, UVRegion } from '..'
 
 /**
  * Generates geometry data for a box
@@ -15,6 +15,7 @@ const createBox = (params: Box = {}): BoxGeometry => {
     depthSegments = 1,
     uvOffsetEachFace = false,
     flipUVy = false,
+    useCubemapCrossLayout = false,
   } = params
 
   const wSegs = widthSegments
@@ -60,6 +61,7 @@ const createBox = (params: Box = {}): BoxGeometry => {
     vertexStride,
     uvOffsetEachFace,
     flipUVy,
+    useCubemapCrossLayout,
   )
   // LEFT
   buildPlane(
@@ -81,6 +83,7 @@ const createBox = (params: Box = {}): BoxGeometry => {
     vertexStride,
     uvOffsetEachFace,
     flipUVy,
+    useCubemapCrossLayout,
   )
   // TOP
   buildPlane(
@@ -102,6 +105,7 @@ const createBox = (params: Box = {}): BoxGeometry => {
     vertexStride,
     uvOffsetEachFace,
     flipUVy,
+    useCubemapCrossLayout,
   )
   // BOTTOM
   buildPlane(
@@ -123,6 +127,7 @@ const createBox = (params: Box = {}): BoxGeometry => {
     vertexStride,
     uvOffsetEachFace,
     flipUVy,
+    useCubemapCrossLayout,
   )
   // BACK
   buildPlane(
@@ -144,6 +149,7 @@ const createBox = (params: Box = {}): BoxGeometry => {
     vertexStride,
     uvOffsetEachFace,
     flipUVy,
+    useCubemapCrossLayout,
   )
   // FRONT
   buildPlane(
@@ -165,6 +171,7 @@ const createBox = (params: Box = {}): BoxGeometry => {
     vertexStride,
     uvOffsetEachFace,
     flipUVy,
+    useCubemapCrossLayout,
   )
 
   return {
@@ -199,11 +206,21 @@ function buildPlane(
   vertexStride = 8,
   uvOffsetEachFace = false,
   flipUVy = false,
+  useCubemapCrossLayout = false, // NEW PARAMETER
 ) {
   const io = i
   const segW = width / wSegs
   const segH = height / hSegs
 
+  // Cubemap cross layout UV regions (only used if useCubemapCrossLayout is true)
+  const uvRegions: Record<number, UVRegion> = {
+    0: { uMin: 1 / 4, vMin: 0 / 3, uMax: 2 / 4, vMax: 1 / 3 }, // RIGHT (+X) - was TOP
+    1: { uMin: 1 / 4, vMin: 1 / 3, uMax: 2 / 4, vMax: 2 / 3 }, // FRONT (+Z) - correct
+    2: { uMin: 0 / 4, vMin: 1 / 3, uMax: 1 / 4, vMax: 2 / 3 }, // LEFT (-X) - correct
+    3: { uMin: 3 / 4, vMin: 1 / 3, uMax: 4 / 4, vMax: 2 / 3 }, // BACK (-Z) - correct
+    4: { uMin: 2 / 4, vMin: 1 / 3, uMax: 3 / 4, vMax: 2 / 3 }, // TOP (+Y) - was RIGHT
+    5: { uMin: 1 / 4, vMin: 2 / 3, uMax: 2 / 4, vMax: 3 / 3 }, // BOTTOM (-Y) - correct
+  }
   for (let iy = 0; iy <= hSegs; iy++) {
     const y = iy * segH - height / 2
     for (let ix = 0; ix <= wSegs; ix++, i++) {
@@ -220,20 +237,34 @@ function buildPlane(
       interleavedArray[i * vertexStride + 3 + w] = depth >= 0 ? 1 : -1
 
       // uv
-      const step = 1 / 6
-      const stepOffset = step * faceIdx
-      const uvX = uvOffsetEachFace
-        ? stepOffset + (ix / wSegs) * step
-        : ix / wSegs
-      const uvY = uvOffsetEachFace
-        ? flipUVy
-          ? stepOffset + step - stepOffset + (iy / hSegs) * step
-          : stepOffset + (iy / hSegs) * step
-        : flipUVy
-        ? 1 - iy / hSegs
-        : iy / hSegs
+      let uvX: number
+      let uvY: number
+
+      if (useCubemapCrossLayout) {
+        // Use cubemap cross layout
+        const region = uvRegions[faceIdx]
+        const localU = ix / wSegs
+        const localV = flipUVy ? 1 - iy / hSegs : iy / hSegs
+
+        uvX = region.uMin + localU * (region.uMax - region.uMin)
+        uvY = region.vMin + localV * (region.vMax - region.vMin)
+      } else {
+        // Original UV calculation
+        const step = 1 / 6
+        const stepOffset = step * faceIdx
+        uvX = uvOffsetEachFace ? stepOffset + (ix / wSegs) * step : ix / wSegs
+        uvY = uvOffsetEachFace
+          ? flipUVy
+            ? stepOffset + step - stepOffset + (iy / hSegs) * step
+            : stepOffset + (iy / hSegs) * step
+          : flipUVy
+          ? 1 - iy / hSegs
+          : iy / hSegs
+      }
+
       interleavedArray[i * vertexStride + 6 + 0] = uvX
       interleavedArray[i * vertexStride + 6 + 1] = uvY
+
       if (iy === hSegs || ix === wSegs) {
         continue
       }

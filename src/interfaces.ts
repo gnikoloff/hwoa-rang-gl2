@@ -168,6 +168,10 @@ export interface Box {
    * @default false
    */
   flipUVy?: boolean
+  /**
+   * @default false
+   */
+  useCubemapCrossLayout?: boolean
 }
 
 export interface Sphere {
@@ -206,4 +210,11 @@ export interface Circle {
   segments?: number
   thetaStart?: number
   thetaEnd?: number
+}
+
+export interface UVRegion {
+  uMin: number
+  vMin: number
+  uMax: number
+  vMax: number
 }

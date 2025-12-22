@@ -84,8 +84,7 @@ class KhronosTextureContainer {
       identifier[10] !== 0x1a ||
       identifier[11] !== 0x0a
     ) {
-      console.error('texture missing KTX identifier')
-      return
+      throw new Error('texture missing KTX identifier')
     }
 
     // load the reset of the header in native 32 bit uint

@@ -36,8 +36,8 @@ export default class CameraController {
   private camera: PerspectiveCamera
   private domElement: HTMLElement
   private target: vec3 = vec3.create()
-  private minDistance = 0
-  private maxDistance = Infinity
+  public minDistance = 0
+  public maxDistance = Infinity
   private isEnabled = true
   private isDamping: boolean
   private dampingFactor: number
@@ -102,7 +102,7 @@ export default class CameraController {
   ) {
     this.mouseWheelForce = mouseWheelForce
     if (!camera) {
-      console.error('camera is undefined')
+      throw new Error('camera is undefined')
     }
     this.camera = camera
     this.domElement = domElement
@@ -270,6 +270,12 @@ export default class CameraController {
     this._spherical.theta += this.targetThetaDampedAction.update()
     this._spherical.phi += this.targetPhiDampedAction.update()
     this._spherical.radius += this.targetRadiusDampedAction.update()
+
+    this._spherical.radius = clamp(
+      this._spherical.radius,
+      this.minDistance,
+      this.maxDistance,
+    )
   }
   updateCamera(): void {
     const s = this._spherical
@@ -378,6 +384,7 @@ export default class CameraController {
     const delta = event.deltaY > 0 ? force : -force
 
     this.targetRadiusDampedAction.value = delta
+
     // if (event.deltaY > 0) {
     //   this.targetRadiusDampedAction.addForce(force)
     // } else {
@@ -549,7 +556,7 @@ export default class CameraController {
     vec3.cross(xDir, zDir, [0, 1, 0])
     vec3.cross(yDir, xDir, zDir)
 
-    const scale = Math.max(this._spherical.radius / 2000, 0.001)
+    const scale = Math.max(this._spherical.radius / 2000, 0.001) * 8
 
     this.targetXDampedAction.addForce(
       (xDir[0] * this._panDelta.x + yDir[0] * this._panDelta.y) * scale,
@@ -563,12 +570,10 @@ export default class CameraController {
   }
   _updateRotateHandler(): void {
     this.targetThetaDampedAction.addForce(
-      (-this._roatteDelta.x / this.domElement.clientWidth) *
-        this.mouseWheelForce,
+      (-this._roatteDelta.x / this.domElement.clientWidth) * 1, // this.mouseWheelForce,
     )
     this.targetPhiDampedAction.addForce(
-      (-this._roatteDelta.y / this.domElement.clientHeight) *
-        this.mouseWheelForce,
+      (-this._roatteDelta.y / this.domElement.clientHeight) * 1, // this.mouseWheelForce,
     )
   }
 }

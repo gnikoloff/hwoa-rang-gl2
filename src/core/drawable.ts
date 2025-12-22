@@ -1,14 +1,15 @@
 import { mat4 } from 'gl-matrix'
-import { BoundingBox } from '../lib/hwoa-rang-math'
+
+import createProgram from '../core/create-program'
 import {
-  createProgram,
-  SceneNode,
   ShaderDefineValue,
   Uniform,
   UniformInfo,
   UniformValue,
-  uploadUniformVariable,
-} from '..'
+} from '../interfaces'
+import { BoundingBox } from '../lib/hwoa-rang-math'
+import SceneNode from './scene-node'
+import uploadUniformVariable from './upload-uniform-variable'
 
 export default class Drawable extends SceneNode {
   protected gl: WebGL2RenderingContext
@@ -28,6 +29,7 @@ export default class Drawable extends SceneNode {
     vertexShaderSource: string,
     fragmentShaderSource: string,
     shaderDefines: { [name: string]: ShaderDefineValue } = {},
+    supportsWorldMatrix = true,
     name?: string,
   ) {
     super(name)
@@ -43,14 +45,19 @@ export default class Drawable extends SceneNode {
     // @ts-ignore
     this.program.__SPECTOR_Metadata = { name, shaderDefines }
 
-    const worldMatrixSet = this.setUniform(Drawable.WORLD_MATRIX_UNIFORM_NAME, {
-      type: gl.FLOAT_MAT4,
-    })
-
-    if (!worldMatrixSet) {
-      throw new Error(
-        `Each Drawable is expected to have a mat4 ${Drawable.WORLD_MATRIX_UNIFORM_NAME} implemented in shader`,
+    if (supportsWorldMatrix) {
+      const worldMatrixSet = this.setUniform(
+        Drawable.WORLD_MATRIX_UNIFORM_NAME,
+        {
+          type: gl.FLOAT_MAT4,
+        },
       )
+
+      if (!worldMatrixSet) {
+        throw new Error(
+          `Each Drawable is expected to have a mat4 ${Drawable.WORLD_MATRIX_UNIFORM_NAME} implemented in shader`,
+        )
+      }
     }
   }
 
@@ -62,8 +69,9 @@ export default class Drawable extends SceneNode {
     } else {
       const location = gl.getUniformLocation(this.program, name)
       if (!location) {
-        console.error(`uniform with name ${name} was not found in the program`)
-        return false
+        throw new Error(
+          `uniform with name ${name} was not found in the program`,
+        )
       }
       uniform = { type, location, value }
       this.#uniforms.set(name, uniform)
@@ -92,8 +100,7 @@ export default class Drawable extends SceneNode {
     if ((uniform = this.#uniforms.get(name))) {
       return uniform
     }
-    console.error(`can't locate uniform with that name`)
-    return null
+    throw new Error(`can't locate uniform with that name`)
   }
 
   updateWorldMatrix(parentWorldMatrix?: mat4 | null): this {
