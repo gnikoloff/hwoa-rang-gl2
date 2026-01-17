@@ -10,6 +10,7 @@ A collection of helper WebGL2 methods to speed up common tasks. Additionally, co
 ## Examples
 - [Georgi Nikolov 2022 portfolio](https://www.2022.georgi-nikolov.com/)
 - [Georgi Nikolov 2026 portfolio](https://www.georgi-nikolov.com/)
+- [PBR Learning Playground](https://gnikoloff.github.io/webgl-pbr-dojo/)
 - [2d Physics Dojo](https://gnikoloff.github.io/2d-phy-dojo/)
 - [Classic Snake in WebAssembly](https://gnikoloff.github.io/wasm-snake/)
 
